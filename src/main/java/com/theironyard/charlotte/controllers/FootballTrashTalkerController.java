@@ -1,9 +1,12 @@
 package com.theironyard.charlotte.controllers;
 
+import com.theironyard.charlotte.entities.Message;
 import com.theironyard.charlotte.entities.User;
 import com.theironyard.charlotte.services.UserRepository;
 import com.theironyard.charlotte.utilities.PasswordStorage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,4 +49,11 @@ public class FootballTrashTalkerController {
         return "index";
     }
 
+    @MessageMapping("/hello")
+    @SendTo("/topic/greetings")
+    public Message greeting(Message message) throws Exception {
+        Message m = new Message();
+        m.setText(message.getText());
+        return m;
+    }
 }
