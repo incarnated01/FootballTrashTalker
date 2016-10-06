@@ -49,9 +49,17 @@ public class FootballTrashTalkerController {
         return "index";
     }
 
-    @MessageMapping("/hello")
-    @SendTo("/topic/greetings")
+    @MessageMapping("/teamId1")
+    @SendTo("/topic/teamId1")
     public Message greeting(Message message) throws Exception {
+        Message m = new Message();
+        m.setText(message.getText());
+        return m;
+    }
+
+    @MessageMapping("/matchupId1")
+    @SendTo("/topic/matchupId1")
+    public Message testaroo(Message message) throws Exception {
         Message m = new Message();
         m.setText(message.getText());
         return m;
