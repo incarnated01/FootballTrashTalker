@@ -5,6 +5,7 @@ import com.theironyard.charlotte.entities.User;
 import com.theironyard.charlotte.services.UserRepository;
 import com.theironyard.charlotte.utilities.PasswordStorage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpSession;
  * Created by mfahrner on 10/3/16.
  */
 @Controller
+@EnableOAuth2Sso
 public class FootballTrashTalkerController {
 
     @Autowired
