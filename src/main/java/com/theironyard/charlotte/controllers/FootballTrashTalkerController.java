@@ -20,8 +20,7 @@ import javax.servlet.http.HttpSession;
 /**
  * Created by mfahrner on 10/3/16.
  */
-@Controller
-@EnableOAuth2Sso
+@RestController
 public class FootballTrashTalkerController {
 
     @Autowired
