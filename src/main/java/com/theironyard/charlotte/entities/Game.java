@@ -10,7 +10,12 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Game {
     String nfl_id;
+
     Home home;
+
+    Away away;
+
+
 
     int day;
     int month;
@@ -22,8 +27,10 @@ public class Game {
     public Game() {
     }
 
-    public Game(String nfl_id, int day, int month, int week) {
+    public Game(String nfl_id, Home home, Away away, int day, int month, int week) {
         this.nfl_id = nfl_id;
+        this.home = home;
+        this.away = away;
         this.day = day;
         this.month = month;
         this.week = week;
@@ -59,6 +66,22 @@ public class Game {
 
     public void setWeek(int week) {
         this.week = week;
+    }
+
+    public Home getHome() {
+        return home;
+    }
+
+    public void setHome(Home home) {
+        this.home = home;
+    }
+
+    public Away getAway() {
+        return away;
+    }
+
+    public void setAway(Away away) {
+        this.away = away;
     }
 }
 

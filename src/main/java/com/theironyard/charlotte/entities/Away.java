@@ -3,13 +3,13 @@ package com.theironyard.charlotte.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by mfahrner on 10/10/16.
  */
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Home {
+public class Away {
 
     String team;
 
@@ -37,10 +37,10 @@ public class Home {
 
     HashMap<String, Drive> drives;
 
-    public Home() {
+    public Away() {
     }
 
-    public Home(String team, String opponent, String totfd, String totyds, String pyds, String ryds, String pen, String penyds, String trnovr, String pt, String ptyds, String ptavg, HashMap<String, Drive> drives) {
+    public Away(String team, String opponent, String totfd, String totyds, String pyds, String ryds, String pen, String penyds, String trnovr, String pt, String ptyds, String ptavg, HashMap<String, Drive> drives) {
         this.team = team;
         this.opponent = opponent;
         this.totfd = totfd;
