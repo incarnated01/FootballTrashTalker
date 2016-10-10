@@ -7,6 +7,7 @@ gulp.task('default', ['html', 'scss', 'js']);
 
 gulp.task('html', function () {
     return gulp.src('index.html')
+           gulp.src('login.html')
         .pipe(gulp.dest('public'));
 })
 
@@ -24,6 +25,7 @@ gulp.task('js', function () {
 
 gulp.task('watch', function () {
             gulp.watch('index.html', ['html']);
+            gulp.watch('login.html', ['html']);
             gulp.watch('*.scss', ['scss']);
             gulp.watch('app.js', ['js']);
         });
