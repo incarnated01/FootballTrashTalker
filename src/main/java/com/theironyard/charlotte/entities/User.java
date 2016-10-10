@@ -20,15 +20,15 @@ public class User {
     private String password;
 
     @Column (nullable = false)
-    private String favTeam;
+    private int teamId;
 
     public User() {
     }
 
-    public User(String username, String password, String favTeam) {
-        this.userName = username;
+    public User(String userName, String password, int teamId) {
+        this.userName = userName;
         this.password = password;
-        this.favTeam = favTeam;
+        this.teamId = teamId;
     }
 
     public int getId() {
@@ -55,11 +55,11 @@ public class User {
         this.password = password;
     }
 
-    public String getFavTeam() {
-        return favTeam;
+    public int getTeamId() {
+        return teamId;
     }
 
-    public void setFavTeam(String favTeam) {
-        this.favTeam = favTeam;
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
     }
 }
