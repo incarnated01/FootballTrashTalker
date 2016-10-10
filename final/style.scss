@@ -1,0 +1,78 @@
+@import '../node_modules/foundation-sites/scss/foundation';
+
+// foundation now exists
+@include foundation-global-styles;
+@include foundation-grid;
+
+
+
+body {
+    background-image: url(http://wallpoper.com/images/00/44/89/64/black-background-hole-dirty_00448964.jpg);
+    font-family: 'Titillium Web', sans-serif;
+    color: deepskyblue;
+}
+
+ul {
+    display: inline;
+    list-style: none;
+
+}
+
+h1 {
+    text-align: center;
+}
+
+#message {
+    display: inline;
+    width: 70%;
+    margin-left: 200px;
+    align-content: center;
+}
+
+a {
+    display: inline-block;
+    text-decoration: none;
+    color: deepskyblue;
+    font-size: 22px;
+    padding-left: 100px;
+    padding: 20px;
+    margin: 10px;
+    margin-left: 50px;
+    width: 25%;
+    text-align: center;
+}
+
+.btn {
+  display: inline;
+  background: deepskyblue;
+  font-family: 'Titillium Web', sans-serif;
+  color: black;
+  align-content: right;
+  border: 2px;
+  font-size: 18px;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+  border-radius: 15px;
+}
+
+.btn:hover {
+  background: black;
+  color: deepskyblue;
+  border: 2px solid deepskyblue;
+  text-decoration: none;
+}
+
+.form-inline {
+    display: inline;
+}
+
+.form-group {
+    display: inline;
+    padding-right: 100px;
+    
+}
+
+#message {
+    background-color: black;
+    color: deepskyblue;
+}
