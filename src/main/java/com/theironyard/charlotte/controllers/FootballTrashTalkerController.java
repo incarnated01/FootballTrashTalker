@@ -47,7 +47,7 @@ public class FootballTrashTalkerController {
         java.util.Date date= new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        String month = String.valueOf(cal.get(Calendar.MONTH));
+        String month = String.valueOf((cal.get(Calendar.MONTH)) + 1);
         String day = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
         String year = String.valueOf(cal.get(Calendar.YEAR));
 
