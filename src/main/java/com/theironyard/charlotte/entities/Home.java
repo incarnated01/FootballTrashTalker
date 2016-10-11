@@ -3,7 +3,6 @@ package com.theironyard.charlotte.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by mfahrner on 10/10/16.
@@ -37,10 +36,12 @@ public class Home {
 
     HashMap<String, Drive> drives;
 
+    Stat stats;
+
     public Home() {
     }
 
-    public Home(String team, String opponent, String totfd, String totyds, String pyds, String ryds, String pen, String penyds, String trnovr, String pt, String ptyds, String ptavg, HashMap<String, Drive> drives) {
+    public Home(String team, String opponent, String totfd, String totyds, String pyds, String ryds, String pen, String penyds, String trnovr, String pt, String ptyds, String ptavg, HashMap<String, Drive> drives, Stat stats) {
         this.team = team;
         this.opponent = opponent;
         this.totfd = totfd;
@@ -54,6 +55,7 @@ public class Home {
         this.ptyds = ptyds;
         this.ptavg = ptavg;
         this.drives = drives;
+        this.stats = stats;
     }
 
     public String getTeam() {
@@ -158,5 +160,13 @@ public class Home {
 
     public void setDrives(HashMap<String, Drive> drives) {
         this.drives = drives;
+    }
+
+    public Stat getStats() {
+        return stats;
+    }
+
+    public void setStats(Stat stats) {
+        this.stats = stats;
     }
 }

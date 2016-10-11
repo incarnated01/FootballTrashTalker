@@ -1,5 +1,6 @@
 package com.theironyard.charlotte.controllers;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theironyard.charlotte.entities.*;
@@ -21,9 +22,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 // api key: RbY0qXPLrFzKjwZHf28oBaet7JOpAixG
+
+// test game data api "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id=2016100207"
 
 /**
  * Created by mfahrner on 10/3/16.
@@ -39,6 +43,26 @@ public class FootballTrashTalkerController {
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     public String login(Model model, HttpSession session, HttpServletResponse response, String userName, String password, String favTeam) throws Exception {
+        // code for parsing schedule
+        String uri = "https://profootballapi.com/schedule?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&&year=2016&month=10&day=9";
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> request = new HttpEntity<String>("", headers);
+
+        String scheduleString = restTemplate.postForObject(uri, request, String.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        List<Schedule> currentSchedule = null;
+        try {
+            currentSchedule = mapper.readValue(scheduleString, new TypeReference<List<Schedule>>(){});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         TeamIdentifier teamIdentifier = teams.findFirstByName(favTeam);
         int teamId = teamIdentifier.getId();
         User user = users.findFirstByUserName(userName);
@@ -49,7 +73,9 @@ public class FootballTrashTalkerController {
         else if (!PasswordStorage.verifyPassword(password, user.getPassword())) {
             throw new Exception("Wrong password");
         }
+
         session.setAttribute("username", userName);
+
         return "index";
     }
 
@@ -65,7 +91,9 @@ public class FootballTrashTalkerController {
 
     @RequestMapping(path = "/index", method = RequestMethod.POST)
     public String getJSON(Model model, String gameId) {
-        final String uri = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id=2016100207";
+
+        // code for parsing game data
+        String uri = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id=2016100207";
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -73,13 +101,13 @@ public class FootballTrashTalkerController {
 
         HttpEntity<String> request = new HttpEntity<String>("", headers);
 
-        String foo = restTemplate.postForObject(uri, request, String.class);
+        String gameString = restTemplate.postForObject(uri, request, String.class);
 
         ObjectMapper mapper = new ObjectMapper();
 
-        Game fooGame = null;
+        Game currentGame = null;
         try {
-            fooGame = mapper.readValue(foo, Game.class);
+            currentGame = mapper.readValue(gameString, Game.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
