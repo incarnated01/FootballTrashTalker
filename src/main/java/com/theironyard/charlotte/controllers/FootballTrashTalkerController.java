@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.*;
 
 // api key: RbY0qXPLrFzKjwZHf28oBaet7JOpAixG
@@ -41,7 +43,7 @@ public class FootballTrashTalkerController {
     TeamRepository teams;
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public String login(Model model, HttpSession session, HttpServletResponse response, String userName, String password, String favTeam) throws Exception {
+    public String login(Model model, HttpSession session, HttpServletResponse response, String userName, String password, String favTeam, Principal principal) throws Exception {
 
         // code to establish date values
         java.util.Date date= new Date();
@@ -111,7 +113,6 @@ public class FootballTrashTalkerController {
 
         session.setAttribute("username", userName);
         model.addAttribute("username", userName);
-
         return "index";
     }
 
@@ -155,7 +156,6 @@ public class FootballTrashTalkerController {
     @MessageMapping("/teamId1")
     @SendTo("/topic/teamId1")
     public Message greeting(Message message) throws Exception {
-//        String messageName = (String) session.getAttribute("username");
         Message m = new Message();
         m.setText(message.getText());
 //        m.setMessageName(messageName);
