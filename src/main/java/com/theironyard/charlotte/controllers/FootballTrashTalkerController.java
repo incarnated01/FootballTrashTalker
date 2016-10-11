@@ -22,8 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 // api key: RbY0qXPLrFzKjwZHf28oBaet7JOpAixG
 
@@ -43,8 +42,24 @@ public class FootballTrashTalkerController {
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     public String login(Model model, HttpSession session, HttpServletResponse response, String userName, String password, String favTeam) throws Exception {
+
+        // code to establish date values
+        java.util.Date date= new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        String month = String.valueOf(cal.get(Calendar.MONTH));
+        String day = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
+        String year = String.valueOf(cal.get(Calendar.YEAR));
+
+        // code to create map of variables to inject into api call
+        Map<String,String> vars = new HashMap<>();
+        vars.put("year", year);
+        vars.put("month", month);
+        vars.put("day", day);
+
         // code for parsing schedule
-        String uri = "https://profootballapi.com/schedule?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&&year=2016&month=10&day=9";
+//        String uri = "https://profootballapi.com/schedule?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&&year=2016&month=10&day=9";
+        String uri = "https://profootballapi.com/schedule?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&&year={year}&month={month}&day={day}";
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -52,7 +67,7 @@ public class FootballTrashTalkerController {
 
         HttpEntity<String> request = new HttpEntity<String>("", headers);
 
-        String scheduleString = restTemplate.postForObject(uri, request, String.class);
+        String scheduleString = restTemplate.postForObject(uri, request, String.class, vars);
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -83,8 +98,6 @@ public class FootballTrashTalkerController {
                 }
             }
         }
-
-        String test = matchupId;
 
         // finds current user, creates user if none exists
         User user = users.findFirstByUserName(userName);
