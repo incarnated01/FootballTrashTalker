@@ -110,6 +110,7 @@ public class FootballTrashTalkerController {
         }
 
         session.setAttribute("username", userName);
+        model.addAttribute("username", userName);
 
         return "index";
     }
@@ -154,16 +155,21 @@ public class FootballTrashTalkerController {
     @MessageMapping("/teamId1")
     @SendTo("/topic/teamId1")
     public Message greeting(Message message) throws Exception {
+//        String messageName = (String) session.getAttribute("username");
         Message m = new Message();
         m.setText(message.getText());
+//        m.setMessageName(messageName);
+//        String test = "";
         return m;
     }
 
     @MessageMapping("/matchupId1")
     @SendTo("/topic/matchupId1")
     public Message testaroo(Message message) throws Exception {
+//        String messageName = (String) session.getAttribute("username");
         Message m = new Message();
         m.setText(message.getText());
+//        m.setMessageName(messageName);
         return m;
     }
 
