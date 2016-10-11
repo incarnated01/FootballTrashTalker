@@ -63,8 +63,30 @@ public class FootballTrashTalkerController {
             e.printStackTrace();
         }
 
+        // finds fav team
         TeamIdentifier teamIdentifier = teams.findFirstByName(favTeam);
+
+        // finds fav team id
         int teamId = teamIdentifier.getId();
+
+        // finds fav team abbreviation
+        String teamAbreviation = teamIdentifier.getAbbreviation();
+
+        // finds matchupId
+        String matchupId = null;
+        if (matchupId == null) {
+            for (int i = 0; i < currentSchedule.size();i++) {
+                if (currentSchedule.get(i).getHome().equals(teamAbreviation)) {
+                    matchupId = currentSchedule.get(i).getId();
+                } else if (currentSchedule.get(i).getAway().equals(teamAbreviation)) {
+                    matchupId = currentSchedule.get(i).getId();
+                }
+            }
+        }
+
+        String test = matchupId;
+
+        // finds current user, creates user if none exists
         User user = users.findFirstByUserName(userName);
         if (user == null) {
             user = new User(userName, PasswordStorage.createHash(password), teamId);
@@ -141,8 +163,9 @@ public class FootballTrashTalkerController {
             while (fileScanner.hasNext()) {
 
                 String line = fileScanner.nextLine();
+                String[] columns = line.split(",");
 
-                TeamIdentifier teamIdentifier = new TeamIdentifier(line);
+                TeamIdentifier teamIdentifier = new TeamIdentifier(columns[0], columns[1]);
 
                 teams.save(teamIdentifier);
             }

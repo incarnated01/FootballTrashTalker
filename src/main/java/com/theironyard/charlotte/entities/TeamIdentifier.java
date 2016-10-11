@@ -15,11 +15,14 @@ public class TeamIdentifier {
 
     String name;
 
+    String abbreviation;
+
     public TeamIdentifier() {
     }
 
-    public TeamIdentifier(String name) {
+    public TeamIdentifier(String name, String abbreviation) {
         this.name = name;
+        this.abbreviation = abbreviation;
     }
 
     public int getId() {
@@ -36,5 +39,13 @@ public class TeamIdentifier {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAbbreviation() {
+        return abbreviation;
+    }
+
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
     }
 }
