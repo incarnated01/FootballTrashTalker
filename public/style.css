@@ -1175,7 +1175,7 @@ h1 {
   text-align: center; }
 
 #message {
-  display: inline;
+  display: block;
   width: 70%;
   margin-left: 200px;
   align-content: center; }

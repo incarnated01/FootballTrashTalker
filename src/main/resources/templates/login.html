@@ -6,15 +6,16 @@
 		<link rel="stylesheet" href="style.css">
 <link href="https://fonts.googleapis.com/css?family=Titillium+Web" rel="stylesheet">
 	</head>
+    <form action="/login" method="post" id="login">
 	<section id='userInfo'>
-		<input id="usernameBox" type="text" placeholder="Username"></input>
+		<input id="usernameBox" type="text" placeholder="Username" name="userName"></input>
 	</section>
     <section id="passInfo">
-        <input id="passwordBox" type="text" placeholder="Password"></input>
+        <input id="passwordBox" type="password" placeholder="Password" name="password"></input>
     </section>
     <section id="teamInfo">
        <div class="dropdown">
-  <select id="teamList" placeholder="Pick Your Team">
+  <select id="teamList" placeholder="Pick Your Team" name="favTeam">
   <div id="myDropdown" class="dropdown-content">
     <option value = "Arizona">Arizona</option>
     <option value="Atlanta">Atlanta</option>
@@ -50,7 +51,9 @@
     <option value="Washington">Washington</option>
   </select>
        </div>
-    
+    </section>
+    <button type="submit" id="loginBtn">Log In</button>
   </div>
 </div>
+    </form>
 </html>

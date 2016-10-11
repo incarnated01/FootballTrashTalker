@@ -118,7 +118,7 @@ public class FootballTrashTalkerController {
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public String home(Model model) {
-        return "home";
+        return "login";
     }
 
     @RequestMapping(path = "/index", method = RequestMethod.GET)
@@ -158,18 +158,14 @@ public class FootballTrashTalkerController {
     public Message greeting(Message message) throws Exception {
         Message m = new Message();
         m.setText(message.getText());
-//        m.setMessageName(messageName);
-//        String test = "";
         return m;
     }
 
     @MessageMapping("/matchupId1")
     @SendTo("/topic/matchupId1")
     public Message testaroo(Message message) throws Exception {
-//        String messageName = (String) session.getAttribute("username");
         Message m = new Message();
         m.setText(message.getText());
-//        m.setMessageName(messageName);
         return m;
     }
 
