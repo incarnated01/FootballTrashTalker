@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theironyard.charlotte.entities.*;
+import com.theironyard.charlotte.services.ScheduleRepository;
 import com.theironyard.charlotte.services.TeamRepository;
 import com.theironyard.charlotte.services.UserRepository;
 import com.theironyard.charlotte.utilities.PasswordStorage;
@@ -42,6 +43,10 @@ public class FootballTrashTalkerController {
     @Autowired
     TeamRepository teams;
 
+    @Autowired
+    ScheduleRepository schedule;
+
+
     @RequestMapping(path = "/", method = RequestMethod.POST)
     public String login(Model model, String userName, String password, String favTeam) throws Exception {
 
@@ -60,7 +65,7 @@ public class FootballTrashTalkerController {
         vars.put("day", day);
 
         // code for parsing schedule
-        String scheduleURI = "https://profootballapi.com/schedule?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&&year=2016&month=10&day=9";
+//        String scheduleURI = "https://profootballapi.com/schedule?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&&year=2016&month=10&day=9";
 //        String uri = "https://profootballapi.com/schedule?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&&year={year}&month={month}&day={day}";
         RestTemplate restTemplate = new RestTemplate();
 
@@ -69,16 +74,16 @@ public class FootballTrashTalkerController {
 
         HttpEntity<String> request = new HttpEntity<String>("", headers);
 
-        String scheduleString = restTemplate.postForObject(scheduleURI, request, String.class);
+//        String scheduleString = restTemplate.postForObject(scheduleURI, request, String.class);
 
         ObjectMapper mapper = new ObjectMapper();
 
-        List<Schedule> currentSchedule = null;
-        try {
-            currentSchedule = mapper.readValue(scheduleString, new TypeReference<List<Schedule>>(){});
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        List<Schedule> currentSchedule = null;
+//        try {
+//            currentSchedule = mapper.readValue(scheduleString, new TypeReference<List<Schedule>>(){});
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         // finds fav team
         TeamIdentifier teamIdentifier = teams.findFirstByName(favTeam);
@@ -90,24 +95,24 @@ public class FootballTrashTalkerController {
         String teamAbreviation = teamIdentifier.getAbbreviation();
 
         // finds matchupId
-        String matchupId = null;
-        if (matchupId == null) {
-            for (int i = 0; i < currentSchedule.size();i++) {
-                if (currentSchedule.get(i).getHome().equals(teamAbreviation)) {
-                    matchupId = currentSchedule.get(i).getId();
-                } else if (currentSchedule.get(i).getAway().equals(teamAbreviation)) {
-                    matchupId = currentSchedule.get(i).getId();
-                }
-            }
-        }
+//        String matchupId = null;
+//        if (matchupId == null) {
+//            for (int i = 0; i < currentSchedule.size();i++) {
+//                if (currentSchedule.get(i).getHome().equals(teamAbreviation)) {
+//                    matchupId = currentSchedule.get(i).getId();
+//                } else if (currentSchedule.get(i).getAway().equals(teamAbreviation)) {
+//                    matchupId = currentSchedule.get(i).getId();
+//                }
+//            }
+//        }
 
-        vars.put("game_id", matchupId);
+//        vars.put("game_id", matchupId);
 
         // code for parsing game data
-//        String gameURI = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id=2016100207";
-        String gameURI = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id={game_id}";
+        String gameURI = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id=2016100207";
+//        String gameURI = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id={game_id}";
 
-        String gameString = restTemplate.postForObject(gameURI, request, String.class, vars);
+        String gameString = restTemplate.postForObject(gameURI, request, String.class);
 
         Game currentGame = null;
         try {
@@ -224,6 +229,32 @@ public class FootballTrashTalkerController {
                 TeamIdentifier teamIdentifier = new TeamIdentifier(columns[0], columns[1]);
 
                 teams.save(teamIdentifier);
+            }
+        }
+
+        if (schedule.count() == 0) {
+            String scheduleURI = "https://profootballapi.com/schedule?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&&year=2016&season_type=REG";
+
+            RestTemplate restTemplate = new RestTemplate();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<String> request = new HttpEntity<String>("", headers);
+
+            String scheduleString = restTemplate.postForObject(scheduleURI, request, String.class);
+
+            ObjectMapper mapper = new ObjectMapper();
+
+            List<Schedule> currentSchedule = null;
+            try {
+                currentSchedule = mapper.readValue(scheduleString, new TypeReference<List<Schedule>>(){});
+            } catch (IOException e) {
+            e.printStackTrace();
+            }
+
+            for (int i = 0;i < currentSchedule.size();i++) {
+                schedule.save(currentSchedule.get(i));
             }
         }
     }
