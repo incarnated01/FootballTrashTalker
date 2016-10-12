@@ -43,7 +43,7 @@ public class FootballTrashTalkerController {
     TeamRepository teams;
 
     @RequestMapping(path = "/", method = RequestMethod.POST)
-    public String login(Model model, HttpSession session, HttpServletResponse response, String userName, String password, String favTeam, Principal principal) throws Exception {
+    public String login(Model model, String userName, String password, String favTeam) throws Exception {
 
         // code to establish date values
         java.util.Date date= new Date();
@@ -141,7 +141,6 @@ public class FootballTrashTalkerController {
             throw new Exception("Wrong password");
         }
 
-        session.setAttribute("username", userName);
         model.addAttribute("username", user.getUsername());
         model.addAttribute("homeScore", homeScore);
         model.addAttribute("awayScore", awayScore);
@@ -157,12 +156,12 @@ public class FootballTrashTalkerController {
     }
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
-    public String home(Model model) {
+    public String home() {
         return "login";
     }
 
     @RequestMapping(path = "/index", method = RequestMethod.GET)
-    public String showChat(Model model) {
+    public String showChat() {
         return "index";
     }
 
