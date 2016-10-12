@@ -123,9 +123,13 @@ public class FootballTrashTalkerController {
         String homeTeam = currentGame.getHome().getTeam();
         String awayTeam = currentGame.getAway().getTeam();
 
-        // need to distill stats into usable data: have in a collection but need to access individual values
-        // I'm thinking stream but need help figuring this out
-//        Collection<PassStat> passingSomething = currentGame.getHome().getStats().getPassing().values();
+        Collection<PassStat> homePassingStats = currentGame.getHome().getStats().getPassing().values();
+        Collection<RushStat> homeRushingStats = currentGame.getHome().getStats().getRushing().values();
+        Collection<RecStat> homeReceivingStats = currentGame.getHome().getStats().getReceiving().values();
+
+        Collection<PassStat> awayPassingStats = currentGame.getAway().getStats().getPassing().values();
+        Collection<RushStat> awayRushingStats = currentGame.getAway().getStats().getRushing().values();
+        Collection<RecStat> awayReceivingStats = currentGame.getAway().getStats().getReceiving().values();
 
         // finds current user, creates user if none exists
         User user = users.findFirstByUserName(userName);
@@ -138,10 +142,17 @@ public class FootballTrashTalkerController {
         }
 
         session.setAttribute("username", userName);
+        model.addAttribute("username", user.getUsername());
         model.addAttribute("homeScore", homeScore);
         model.addAttribute("awayScore", awayScore);
         model.addAttribute("homeTeam", homeTeam);
         model.addAttribute("awayTeam", awayTeam);
+        model.addAttribute("homePassStats", homePassingStats);
+        model.addAttribute("homeRushStats", homeRushingStats);
+        model.addAttribute("homeRecStats", homeReceivingStats);
+        model.addAttribute("awayPassStats", awayPassingStats);
+        model.addAttribute("awayRushStats", awayRushingStats);
+        model.addAttribute("awayRecStats", awayReceivingStats);
         return "index";
     }
 
@@ -191,7 +202,7 @@ public class FootballTrashTalkerController {
         return m;
     }
 
-    @MessageMapping("/matchupId1")
+    @MessageMapping("/matchupId/{id}")
     @SendTo("/topic/matchupId1")
     public Message testaroo(Message message) throws Exception {
         Message m = new Message();

@@ -8,6 +8,10 @@
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <link rel="stylesheet" href="style.css">
+    <script type="application/javascript">
+        const username = "{{ username }}";
+        console.log(username);
+    </script>
     <script src="app.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Titillium+Web" rel="stylesheet">
     <meta charset="UTF-8">
@@ -15,7 +19,27 @@
 </head>
 
 <body style="overflow: scroll;">
-    <h1> TrashTalkin</h1>
+    <h1> TrashTalkin </h1>
+    <ul>
+        <p>Pass Stats</p>
+        {{#homePassStats}}
+        <li id="hPassStats">
+            {{name}} | {{completions}} | {{attempts}} | {{yards}} | {{touchdowns}} | {{interceptions}}
+        </li>
+        {{/homePassStats}}
+        <p>Rush Stats</p>
+        {{#homeRushStats}}
+        <li id="hRushStats">
+            {{name}} | {{attempts}} | {{yards}} | {{touchdowns}}
+        </li>
+        {{/homeRushStats}}
+        <p>Rec Stats</p>
+        {{#homeRecStats}}
+        <li>
+            {{name}} | {{receptions}} | {{yards}} | {{touchdowns}}
+        </li>
+        {{/homeRecStats}}
+    </ul>
     <div id="main-content" class="container">
 
         <div class="row">
@@ -33,6 +57,27 @@
                 <p>{{awayTeam}} : {{awayScore}}</p>
                 <br>
             </nav>
+            <ul>
+                <p>Pass Stats</p>
+                {{#awayPassStats}}
+                <li id="aPassStats">
+                    {{name}} | {{completions}} | {{attempts}} | {{yards}} | {{touchdowns}} | {{interceptions}}
+                </li>
+                {{/awayPassStats}}
+                <p>Rush Stats</p>
+                {{#awayRushStats}}
+                <li id="aRushStats">
+                    {{name}} | {{attempts}} | {{yards}} | {{touchdowns}}
+                </li>
+                {{/awayRushStats}}
+                <p>Rec Stats</p>
+                {{#awayRecStats}}
+                <li>
+                    {{name}} | {{receptions}} | {{yards}} | {{touchdowns}}
+                </li>
+                {{/awayRecStats}}
+            </ul>
+
             <div id="messagesBox" style="overflow: scroll;"> 
                      </div>
             <div class="col-md-6">
