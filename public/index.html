@@ -8,43 +8,76 @@
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <link rel="stylesheet" href="style.css">
+    <script type="application/javascript">
+        const username = "{{ username }}";
+        console.log(username);
+    </script>
     <script src="app.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Titillium+Web" rel="stylesheet">
     <meta charset="UTF-8">
     <title>SMACKTALK</title>
-
-    <script>
-        var userData = {
-            teamId: 1,
-            matchupId: 2,
-            groupId: 3
-        };
-    </script>
-
-    <script src="/app.js"></script>
-
 </head>
 
 <body style="overflow: scroll;">
-    <h1> TrashTalkin</h1>
+    <h1> TrashTalkin </h1>
+    <ul>
+        <p>Pass Stats</p>
+        {{#homePassStats}}
+        <li id="hPassStats">
+            {{name}} | {{completions}} | {{attempts}} | {{yards}} | {{touchdowns}} | {{interceptions}}
+        </li>
+        {{/homePassStats}}
+        <p>Rush Stats</p>
+        {{#homeRushStats}}
+        <li id="hRushStats">
+            {{name}} | {{attempts}} | {{yards}} | {{touchdowns}}
+        </li>
+        {{/homeRushStats}}
+        <p>Rec Stats</p>
+        {{#homeRecStats}}
+        <li>
+            {{name}} | {{receptions}} | {{yards}} | {{touchdowns}}
+        </li>
+        {{/homeRecStats}}
+    </ul>
     <div id="main-content" class="container">
 
         <div class="row">
             <div class="col-md-6">
                 <form class="form-inline">
                     <div class="form-group">
-                        <!--<button id="connect" class="btn" type="button">Connect</button>
-                    <button id="disconnect" class="btn" type="button" disabled="disabled">Disconnect-->
-                        </button>
                     </div>
                 </form>
             </div>
             <nav id="navigation">
                 <a href="/index" id="teamroom">Team Room</a>
                 <a href="/index" id="matchuproom">Matchup Room</a>
-                <a href="/index" id="fantasyroom">Fantasy League Room</a>
+                <p>{{homeTeam}} : {{homeScore}}</p>
+                <br>
+                <p>{{awayTeam}} : {{awayScore}}</p>
                 <br>
             </nav>
+            <ul>
+                <p>Pass Stats</p>
+                {{#awayPassStats}}
+                <li id="aPassStats">
+                    {{name}} | {{completions}} | {{attempts}} | {{yards}} | {{touchdowns}} | {{interceptions}}
+                </li>
+                {{/awayPassStats}}
+                <p>Rush Stats</p>
+                {{#awayRushStats}}
+                <li id="aRushStats">
+                    {{name}} | {{attempts}} | {{yards}} | {{touchdowns}}
+                </li>
+                {{/awayRushStats}}
+                <p>Rec Stats</p>
+                {{#awayRecStats}}
+                <li>
+                    {{name}} | {{receptions}} | {{yards}} | {{touchdowns}}
+                </li>
+                {{/awayRecStats}}
+            </ul>
+
             <div id="messagesBox" style="overflow: scroll;"> 
                      </div>
             <div class="col-md-6">
@@ -55,27 +88,10 @@
                         <input type="text" id="message" class="form-control" placeholder="Type Message">
                         <button id="send" class="btn btn-default" type="submit">Send</button>
                     </div>
-
                 </form>
             </div>
         </div>
-        
-        <div class="row">
-            <div class="col-md-12">
-                <table id="conversation" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="greetings">
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        </form>
     </div>
-    
 </body>
 
 </html>

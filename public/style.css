@@ -1220,7 +1220,7 @@ a {
   margin-left: 0; }
 
 #message {
-  display: inline;
+  display: block;
   background-color: black;
   color: deepskyblue;
   width: 65%;
