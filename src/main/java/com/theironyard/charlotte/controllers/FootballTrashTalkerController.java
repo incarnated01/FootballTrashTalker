@@ -42,7 +42,7 @@ public class FootballTrashTalkerController {
     @Autowired
     TeamRepository teams;
 
-    @RequestMapping(path = "/login", method = RequestMethod.POST)
+    @RequestMapping(path = "/", method = RequestMethod.POST)
     public String login(Model model, HttpSession session, HttpServletResponse response, String userName, String password, String favTeam, Principal principal) throws Exception {
 
         // code to establish date values
@@ -60,8 +60,8 @@ public class FootballTrashTalkerController {
         vars.put("day", day);
 
         // code for parsing schedule
-//        String uri = "https://profootballapi.com/schedule?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&&year=2016&month=10&day=9";
-        String uri = "https://profootballapi.com/schedule?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&&year={year}&month={month}&day={day}";
+        String scheduleURI = "https://profootballapi.com/schedule?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&&year=2016&month=10&day=9";
+//        String uri = "https://profootballapi.com/schedule?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&&year={year}&month={month}&day={day}";
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -69,7 +69,7 @@ public class FootballTrashTalkerController {
 
         HttpEntity<String> request = new HttpEntity<String>("", headers);
 
-        String scheduleString = restTemplate.postForObject(uri, request, String.class, vars);
+        String scheduleString = restTemplate.postForObject(scheduleURI, request, String.class);
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -101,6 +101,32 @@ public class FootballTrashTalkerController {
             }
         }
 
+        vars.put("game_id", matchupId);
+
+        // code for parsing game data
+//        String gameURI = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id=2016100207";
+        String gameURI = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id={game_id}";
+
+        String gameString = restTemplate.postForObject(gameURI, request, String.class, vars);
+
+        Game currentGame = null;
+        try {
+            currentGame = mapper.readValue(gameString, Game.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // data to pass into mustache
+        int homeScore = currentGame.getHome_score();
+        int awayScore = currentGame.getAway_score();
+
+        String homeTeam = currentGame.getHome().getTeam();
+        String awayTeam = currentGame.getAway().getTeam();
+
+        // need to distill stats into usable data: have in a collection but need to access individual values
+        // I'm thinking stream but need help figuring this out
+//        Collection<PassStat> passingSomething = currentGame.getHome().getStats().getPassing().values();
+
         // finds current user, creates user if none exists
         User user = users.findFirstByUserName(userName);
         if (user == null) {
@@ -112,7 +138,10 @@ public class FootballTrashTalkerController {
         }
 
         session.setAttribute("username", userName);
-        model.addAttribute("username", userName);
+        model.addAttribute("homeScore", homeScore);
+        model.addAttribute("awayScore", awayScore);
+        model.addAttribute("homeTeam", homeTeam);
+        model.addAttribute("awayTeam", awayTeam);
         return "index";
     }
 
@@ -126,37 +155,38 @@ public class FootballTrashTalkerController {
         return "index";
     }
 
-    @RequestMapping(path = "/index", method = RequestMethod.POST)
-    public String getJSON(Model model, String gameId) {
-
-        // code for parsing game data
-        String uri = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id=2016100207";
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<String> request = new HttpEntity<String>("", headers);
-
-        String gameString = restTemplate.postForObject(uri, request, String.class);
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        Game currentGame = null;
-        try {
-            currentGame = mapper.readValue(gameString, Game.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        int blah = Integer.valueOf(gameId);
-        return "index";
-    }
+    // left this here incase a need a guide while refactoring
+//    @RequestMapping(path = "/index", method = RequestMethod.POST)
+//    public String getJSON(Model model, String gameId) {
+//
+//        // code for parsing game data
+//        String uri = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id=2016100207";
+//        RestTemplate restTemplate = new RestTemplate();
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//        HttpEntity<String> request = new HttpEntity<String>("", headers);
+//
+//        String gameString = restTemplate.postForObject(uri, request, String.class);
+//
+//        ObjectMapper mapper = new ObjectMapper();
+//
+//        Game currentGame = null;
+//        try {
+//            currentGame = mapper.readValue(gameString, Game.class);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return "index";
+//    }
 
     @MessageMapping("/teamId1")
     @SendTo("/topic/teamId1")
     public Message greeting(Message message) throws Exception {
         Message m = new Message();
+        m.setMessageName(message.getMessageName());
         m.setText(message.getText());
         return m;
     }
@@ -165,6 +195,7 @@ public class FootballTrashTalkerController {
     @SendTo("/topic/matchupId1")
     public Message testaroo(Message message) throws Exception {
         Message m = new Message();
+        m.setMessageName(message.getMessageName());
         m.setText(message.getText());
         return m;
     }

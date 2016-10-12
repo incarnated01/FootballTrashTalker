@@ -14,8 +14,8 @@ function dropFunction() {
 }
 
 
-function sendMessage() {
-    stompClient.send("/app/teamId1", {}, JSON.stringify({'text': $("#message").val()}));
+function sendMessage(userName) {
+    stompClient.send("/app/teamId1", {}, JSON.stringify({'messageName': "mike",'text': $("#message").val()}));
     }
 
 function showGreeting(message) {
@@ -26,29 +26,14 @@ $(function () {
     $("form").on('submit', function (e) {
         e.preventDefault();
     });
-    $( "#connect" ).click(function() { connect(); });
-    $( "#disconnect" ).click(function() { disconnect(); });
     $( "#send" ).click(function() { sendMessage(); });
 });
 
 window.addEventListener('load', function () {
-    function setConnected(connected) {
-        $("#connect").prop("disabled", connected);
-        $("#disconnect").prop("disabled", !connected);
-        if (connected) {
-            $("#conversation").show();
-        }
-        else {
-            $("#conversation").hide();
-        }
-        $("#messagesBox").html("");
-    }
-
     function connect() {
     let socket = new SockJS('/ws');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
-        setConnected(true);
         console.log('Connected: ' + frame);
 
         stompClient.subscribe('/topic/teamId1', function (message) {
