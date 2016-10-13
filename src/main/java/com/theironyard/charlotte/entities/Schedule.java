@@ -18,7 +18,7 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int tableId;
 
-    @Column (nullable = true)
+    @Column (nullable = false)
     String id;
 
     @Column (nullable = false)
@@ -33,23 +33,20 @@ public class Schedule {
     @Column (nullable = false)
     String month;
 
+    @Column (nullable = true)
+    int dayOfYear;
+
+
     public Schedule() {
     }
 
-    public Schedule(String id, String home, String away, String day, String month) {
+    public Schedule(String id, String home, String away, String day, String month, int dayOfYear) {
         this.id = id;
         this.home = home;
         this.away = away;
         this.day = day;
         this.month = month;
-    }
-
-    public int getTableId() {
-        return tableId;
-    }
-
-    public void setTableId(int tableId) {
-        this.tableId = tableId;
+        this.dayOfYear = dayOfYear;
     }
 
     public String getId() {
@@ -90,5 +87,13 @@ public class Schedule {
 
     public void setMonth(String month) {
         this.month = month;
+    }
+
+    public int getDayOfYear() {
+        return dayOfYear;
+    }
+
+    public void setDayOfYear(int dayOfYear) {
+        this.dayOfYear = dayOfYear;
     }
 }

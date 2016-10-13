@@ -25,11 +25,11 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 // api key: RbY0qXPLrFzKjwZHf28oBaet7JOpAixG
-
-// test game data api "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id=2016100207"
 
 /**
  * Created by mfahrner on 10/3/16.
@@ -50,40 +50,11 @@ public class FootballTrashTalkerController {
     @RequestMapping(path = "/", method = RequestMethod.POST)
     public String login(Model model, String userName, String password, String favTeam) throws Exception {
 
-        // code to establish date values
+        // code to establish day of year values
         java.util.Date date= new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        String month = String.valueOf((cal.get(Calendar.MONTH)) + 1);
-        String day = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
-        String year = String.valueOf(cal.get(Calendar.YEAR));
-
-        // code to create map of variables to inject into api call
-        Map<String,String> vars = new HashMap<>();
-        vars.put("year", year);
-        vars.put("month", month);
-        vars.put("day", day);
-
-        // code for parsing schedule
-//        String scheduleURI = "https://profootballapi.com/schedule?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&&year=2016&month=10&day=9";
-//        String uri = "https://profootballapi.com/schedule?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&&year={year}&month={month}&day={day}";
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<String> request = new HttpEntity<String>("", headers);
-
-//        String scheduleString = restTemplate.postForObject(scheduleURI, request, String.class);
-
-        ObjectMapper mapper = new ObjectMapper();
-
-//        List<Schedule> currentSchedule = null;
-//        try {
-//            currentSchedule = mapper.readValue(scheduleString, new TypeReference<List<Schedule>>(){});
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        int dayOfYear = cal.get(Calendar.DAY_OF_YEAR);
 
         // finds fav team
         TeamIdentifier teamIdentifier = teams.findFirstByName(favTeam);
@@ -94,34 +65,51 @@ public class FootballTrashTalkerController {
         // finds fav team abbreviation
         String teamAbreviation = teamIdentifier.getAbbreviation();
 
-        // finds matchupId
-//        String matchupId = null;
-//        if (matchupId == null) {
-//            for (int i = 0; i < currentSchedule.size();i++) {
-//                if (currentSchedule.get(i).getHome().equals(teamAbreviation)) {
-//                    matchupId = currentSchedule.get(i).getId();
-//                } else if (currentSchedule.get(i).getAway().equals(teamAbreviation)) {
-//                    matchupId = currentSchedule.get(i).getId();
-//                }
-//            }
-//        }
-
-//        vars.put("game_id", matchupId);
-
-        // code for parsing game data
-        String gameURI = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id=2016100207";
-//        String gameURI = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id={game_id}";
-
-        String gameString = restTemplate.postForObject(gameURI, request, String.class);
-
-        Game currentGame = null;
-        try {
-            currentGame = mapper.readValue(gameString, Game.class);
-        } catch (IOException e) {
-            e.printStackTrace();
+//         finds matchupId
+        String matchupId = null;
+        int gameDay = 0;
+        List<Schedule> teamSchedule = new ArrayList<>();
+        if (matchupId == null) {
+            teamSchedule = schedule.findByHomeOrAway(teamAbreviation, teamAbreviation);
+            for (int i = 0;i < teamSchedule.size();i++) {
+                if (teamSchedule.get(i).getDayOfYear() > dayOfYear) {
+                    matchupId = teamSchedule.get(i).getId();
+                    gameDay = teamSchedule.get(i).getDayOfYear();
+                    break;
+                }
+            }
         }
 
-        // data to pass into mustache
+        // problem if matchup id is for upcoming game everything goes to shit
+        Map<String,String> vars = new HashMap<>();
+//        vars.put("game_id", matchupId);
+        vars.put("game_id", "2016100207");
+
+
+        // code for parsing game data
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> request = new HttpEntity<String>("", headers);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        Game currentGame = null;
+//        if (dayOfYear == gameDay) {
+//        String gameURI = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id=2016100207";
+        String gameURI = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id={game_id}";
+
+        String gameString = restTemplate.postForObject(gameURI, request, String.class, vars);
+
+        try {
+                currentGame = mapper.readValue(gameString, Game.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // data to pass into mustache
         int homeScore = currentGame.getHome_score();
         int awayScore = currentGame.getAway_score();
 
@@ -136,6 +124,7 @@ public class FootballTrashTalkerController {
         Collection<RushStat> awayRushingStats = currentGame.getAway().getStats().getRushing().values();
         Collection<RecStat> awayReceivingStats = currentGame.getAway().getStats().getReceiving().values();
 
+
         // finds current user, creates user if none exists
         User user = users.findFirstByUserName(userName);
         if (user == null) {
@@ -146,7 +135,6 @@ public class FootballTrashTalkerController {
             throw new Exception("Wrong password");
         }
 
-        model.addAttribute("username", user.getUsername());
         model.addAttribute("homeScore", homeScore);
         model.addAttribute("awayScore", awayScore);
         model.addAttribute("homeTeam", homeTeam);
@@ -157,6 +145,7 @@ public class FootballTrashTalkerController {
         model.addAttribute("awayPassStats", awayPassingStats);
         model.addAttribute("awayRushStats", awayRushingStats);
         model.addAttribute("awayRecStats", awayReceivingStats);
+        model.addAttribute("username", user.getUsername());
         return "index";
     }
 
@@ -206,7 +195,7 @@ public class FootballTrashTalkerController {
         return m;
     }
 
-    @MessageMapping("/matchupId/{id}")
+    @MessageMapping("/matchupId1")
     @SendTo("/topic/matchupId1")
     public Message testaroo(Message message) throws Exception {
         Message m = new Message();
@@ -216,7 +205,7 @@ public class FootballTrashTalkerController {
     }
 
     @PostConstruct
-    public void init() throws IOException {
+    public void init() throws IOException, ParseException {
         if (teams.count() == 0) {
             File f = new File("teams.csv");
             Scanner fileScanner = new Scanner(f);
@@ -254,8 +243,22 @@ public class FootballTrashTalkerController {
             }
 
             for (int i = 0;i < currentSchedule.size();i++) {
-                schedule.save(currentSchedule.get(i));
+                Schedule scheduleObject = currentSchedule.get(i);
+                int scheduleDay = Integer.valueOf(scheduleObject.getDay());
+                int scheduleMonth = Integer.valueOf(scheduleObject.getMonth());
+                int scheduleYear = 2016;
+                String dateString = String.format("%d/%d/%d", scheduleMonth, scheduleDay, scheduleYear);
+                int scheduleDayOfYear = getDayOfYear(dateString);
+                scheduleObject.setDayOfYear(scheduleDayOfYear);
+                schedule.save(scheduleObject);
             }
         }
+    }
+    private static int getDayOfYear(String dateString) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        Date date = sdf.parse(dateString);
+        GregorianCalendar greg = new GregorianCalendar();
+        greg.setTime(date);
+        return greg.get(greg.DAY_OF_YEAR);
     }
 }
