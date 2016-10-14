@@ -135,21 +135,19 @@ app.factory("messageService", function () {
 
 // window.addEventListener('load', function () {
     // function connect() {
-    let socket = new SockJS('/ws');
-    stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-        console.log('Connected: ' + frame);
+    // let socket = new SockJS('/ws');
+    // stompClient = Stomp.over(socket);
+    // stompClient.connect({}, function (frame) {
+    //     console.log('Connected: ' + frame);
 
-        stompClient.subscribe('/topic/teamId1', function (message) {
-            messages.team.push(JSON.parse(message.body));
-        });
+    //     stompClient.subscribe('/topic/teamId1', function (message) {
+    //         messages.team.push(JSON.parse(message.body));
+    //     });
 
-        stompClient.subscribe('/topic/matchupId1', function (message) {
-            messages.match.push(JSON.parse(message.body));
-        });
-    });
+    //     stompClient.subscribe('/topic/matchupId1', function (message) {
+    //         messages.match.push(JSON.parse(message.body));
+    //     });
+    // });
 // }
     // connect();
 // });
-
-// },{}]},{},[1])
