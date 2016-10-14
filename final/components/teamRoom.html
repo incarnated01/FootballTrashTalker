@@ -1,4 +1,10 @@
-<!DOCTYPE html>
+<ul>
+    <li ng-repeat="message in messages">
+        {{ message }}
+    </li>
+</ul>
+
+<!--<!DOCTYPE html>
 <html ng-app="sportsApp">
 
 <head>
@@ -18,7 +24,7 @@
     <title>SMACKTALK</title>
 </head>
 
-<body style="overflow: scroll;">
+<body ng-controller="roomController" style="overflow: scroll;">
     <h1> TrashTalkin </h1>
    
     <div id="main-content" class="container">
@@ -31,13 +37,14 @@
                 </form>
             </div>
             <nav id="navigation">
-                <a ui-sref="teamRoom" id="teamroom">Team Room</a>
-                <a ui-sref="matchRoom" id="matchuproom">Matchup Room</a>
+                <a href="/" id="teamroom">Team Room</a>
+                <a href="/" id="matchuproom">Matchup Room</a>
                 
             </nav>
+           
 
-            <div ui-view id="messagesBox" style="overflow: scroll;"></div>
-
+            <div id="messagesBox" style="overflow: scroll;"> 
+                     </div>
             <div class="col-md-6">
                 <form class="form-inline">
                     
@@ -52,4 +59,4 @@
     </div>
 </body>
 
-</html>
+</html>-->
