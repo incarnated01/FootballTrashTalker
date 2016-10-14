@@ -38,11 +38,18 @@ app.controller('matchController', function ($scope, messageService) {
     $scope.messages = messageService.getMessages();
 });
 
+app.controller('sendController', function ($scope, messageService) {
+    $scope.send = function(){
+    messageService.sendMessage($scope.messageValue);
+
+    };
+})
+
 // Factories return SERVICES.
 app.factory("messageService", function () {
     let messages = {
-        team: ['hi', 'message', 'its me'],
-        match: ['Fly Eagles fly!'],
+        team: [],
+        match: [],
     };
 
     let currentRoom = 'team';
@@ -68,8 +75,14 @@ app.factory("messageService", function () {
             return messages[currentRoom];
         },
 
-        sendMessage: function() {
+        sendMessage: function(valuable) {
 
+            if (currentRoom === 'team') {
+            stompClient.send("/app/teamId/" + teamId, {}, JSON.stringify({'messageName': username,'text': valuable}));
+            }
+            else {
+            stompClient.send("/app/matchupId/" + matchupId, {}, JSON.stringify({'messageName': username,'text': valuable}));
+            }
         },
         
         setCurrent: function (active) {
