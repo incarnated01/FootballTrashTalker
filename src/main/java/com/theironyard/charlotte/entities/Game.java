@@ -1,7 +1,12 @@
 package com.theironyard.charlotte.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.theironyard.charlotte.services.ScheduleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,6 +30,8 @@ public class Game {
 
     int away_score;
 
+    @Autowired
+    ScheduleRepository schedule;
 
     public Game() {
     }
@@ -103,6 +110,23 @@ public class Game {
 
     public void setAway_score(int away_score) {
         this.away_score = away_score;
+    }
+
+    public List<Schedule> getCurrentGames() {
+        java.util.Date date= new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int dayOfYear = cal.get(Calendar.DAY_OF_YEAR);
+        List<Schedule> currentDayGames = schedule.findByDayOfYear(dayOfYear);
+        List<Schedule> pingList = new ArrayList<>();
+        for (int i = 0; i < currentDayGames.size();i ++) {
+            long unixTime = System.currentTimeMillis() / 1000L;
+            long gameTime = currentDayGames.get(i).getTime();
+            if (gameTime <= unixTime && gameTime < (unixTime + 21600)) {
+                pingList.add(currentDayGames.get(i));
+            }
+        }
+        return pingList;
     }
 }
 

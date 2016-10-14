@@ -36,17 +36,28 @@ public class Schedule {
     @Column (nullable = true)
     int dayOfYear;
 
+    @Column (nullable = false)
+    long time;
 
     public Schedule() {
     }
 
-    public Schedule(String id, String home, String away, String day, String month, int dayOfYear) {
+    public Schedule(String id, String home, String away, String day, String month, int dayOfYear, long time) {
         this.id = id;
         this.home = home;
         this.away = away;
         this.day = day;
         this.month = month;
         this.dayOfYear = dayOfYear;
+        this.time = time;
+    }
+
+    public int getTableId() {
+        return tableId;
+    }
+
+    public void setTableId(int tableId) {
+        this.tableId = tableId;
     }
 
     public String getId() {
@@ -95,5 +106,13 @@ public class Schedule {
 
     public void setDayOfYear(int dayOfYear) {
         this.dayOfYear = dayOfYear;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 }

@@ -32,11 +32,11 @@ function dropFunction() {
 
 
 function sendMessage(userName) {
-    stompClient.send("/app/teamId1", {}, JSON.stringify({'messageName': "mike",'text': $("#message").val()}));
+    stompClient.send("/app/teamId/" + teamId, {}, JSON.stringify({'messageName': username,'text': $("#message").val()}));
     }
 
 function showGreeting(message) {
-    $("#messagesBox").append(message);
+    $("#messagesBox").append('<p><span>' + message.messageName + ": " + '</span><span>' + message.text + '</p>');
 }
 
 $(function () {
@@ -53,12 +53,13 @@ window.addEventListener('load', function () {
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
 
-        stompClient.subscribe('/topic/teamId1', function (message) {
-            showGreeting(JSON.parse(message.body).text);
-
+        stompClient.subscribe('/topic/teamId/' + teamId, function (message) {
+            let parsed = JSON.parse(message.body);
+            showGreeting(parsed);
         });
 
-        stompClient.subscribe('/topic/matchupId1', function (message) {
+        stompClient.subscribe('/topic/matchupId/' + matchupId, function (message) {
+            showGreeting(JSON.parse(message.body).messageName + ": ");
             showGreeting(JSON.parse(message.body).text);
         });
     });

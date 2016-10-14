@@ -1239,7 +1239,8 @@ a {
   background-color: black;
   border: 2px solid deepskyblue;
   flex-wrap: wrap;
-  margin-left: 110px; }
+  margin-left: 110px;
+}
 
 dropbtn {
   background-color: #4CAF50;
