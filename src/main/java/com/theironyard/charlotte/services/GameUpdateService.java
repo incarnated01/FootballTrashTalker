@@ -30,6 +30,9 @@ public class GameUpdateService {
     private final RestTemplate restTemplate;
 
     @Autowired
+    Game game;
+
+    @Autowired
     private SimpMessagingTemplate template;
 
     public GameUpdateService(RestTemplateBuilder restTemplateBuilder) {
@@ -41,15 +44,15 @@ public class GameUpdateService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<String> request = new HttpEntity<String>("", headers);
+        HttpEntity<String> request = new HttpEntity<>("", headers);
 
         ObjectMapper mapper = new ObjectMapper();
 
-        Game currentGame = null;
-
-        List<Schedule> currentDaysGames = currentGame.getCurrentGames();
+        List<Schedule> currentDaysGames = game.getCurrentGames();
 
         Map<String,String> vars = new HashMap<>();
+
+        Game thisGame = null;
 
         for (int i = 0; i < currentDaysGames.size();i++) {
             vars.put("game_id", currentDaysGames.get(i).getId());
@@ -60,19 +63,19 @@ public class GameUpdateService {
             String gameString = restTemplate.postForObject(gameURI, request, String.class, vars);
 
             try {
-                currentGame = mapper.readValue(gameString, Game.class);
+                thisGame = mapper.readValue(gameString, Game.class);
+                // send message to people. based off game.
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        Thread.sleep(1000);
-        return new AsyncResult<>(currentGame);
+        return new AsyncResult<>(thisGame);
     }
-
-    @Scheduled(fixedRate = 10)
-    public void botMessage() {
-        Message m = new Message("autobot", "test");
-        this.template.convertAndSend("topic/teamId/{teamId}", m);
-    }
+//
+//    @Scheduled(fixedRate = 100000)
+//    public void botMessage() {
+//        Message m = new Message("autobot", "test");
+//        this.template.convertAndSend("/topic/teamId/32", m);
+//    }
 }

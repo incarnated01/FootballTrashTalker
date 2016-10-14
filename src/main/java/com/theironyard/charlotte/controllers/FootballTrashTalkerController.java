@@ -4,17 +4,17 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theironyard.charlotte.entities.*;
-import com.theironyard.charlotte.services.AppRunner;
-import com.theironyard.charlotte.services.ScheduleRepository;
-import com.theironyard.charlotte.services.TeamRepository;
-import com.theironyard.charlotte.services.UserRepository;
+import com.theironyard.charlotte.services.*;
 import com.theironyard.charlotte.utilities.PasswordStorage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.*;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
@@ -50,8 +51,10 @@ public class FootballTrashTalkerController {
     @Autowired
     ScheduleRepository schedule;
 
-    String someId = "32";
+    private SimpMessagingTemplate template;
 
+    @Autowired
+    ApplicationContext context;
 
     @RequestMapping(path = "/", method = RequestMethod.POST)
     public String login(Model model, String userName, String password, String favTeam) throws Exception {
@@ -87,51 +90,6 @@ public class FootballTrashTalkerController {
             }
         }
 
-//
-//        Map<String,String> vars = new HashMap<>();
-//        vars.put("game_id", matchupId);
-//        vars.put("game_id", "2016100207");
-//
-//
-//        // code for parsing game data
-//        RestTemplate restTemplate = new RestTemplate();
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//        HttpEntity<String> request = new HttpEntity<String>("", headers);
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//
-//        Game currentGame = null;
-//        if (dayOfYear == gameDay) {
-//        String gameURI = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id=2016100207";
-//        String gameURI = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id={game_id}";
-//
-//        String gameString = restTemplate.postForObject(gameURI, request, String.class, vars);
-//
-//        try {
-//                currentGame = mapper.readValue(gameString, Game.class);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-
-//             data to pass into mustache
-//        int homeScore = currentGame.getHome_score();
-//        int awayScore = currentGame.getAway_score();
-//
-//        String homeTeam = currentGame.getHome().getTeam();
-//        String awayTeam = currentGame.getAway().getTeam();
-//
-//        Collection<PassStat> homePassingStats = currentGame.getHome().getStats().getPassing().values();
-//        Collection<RushStat> homeRushingStats = currentGame.getHome().getStats().getRushing().values();
-//        Collection<RecStat> homeReceivingStats = currentGame.getHome().getStats().getReceiving().values();
-//
-//        Collection<PassStat> awayPassingStats = currentGame.getAway().getStats().getPassing().values();
-//        Collection<RushStat> awayRushingStats = currentGame.getAway().getStats().getRushing().values();
-//        Collection<RecStat> awayReceivingStats = currentGame.getAway().getStats().getReceiving().values();
-
-
         // finds current user, creates user if none exists
         User user = users.findFirstByUserName(userName);
         if (user == null) {
@@ -141,16 +99,7 @@ public class FootballTrashTalkerController {
         else if (!PasswordStorage.verifyPassword(password, user.getPassword())) {
             throw new Exception("Wrong password");
         }
-//        model.addAttribute("homeScore", homeScore);
-//        model.addAttribute("awayScore", awayScore);
-//        model.addAttribute("homeTeam", homeTeam);
-//        model.addAttribute("awayTeam", awayTeam);
-//        model.addAttribute("homePassStats", homePassingStats);
-//        model.addAttribute("homeRushStats", homeRushingStats);
-//        model.addAttribute("homeRecStats", homeReceivingStats);
-//        model.addAttribute("awayPassStats", awayPassingStats);
-//        model.addAttribute("awayRushStats", awayRushingStats);
-//        model.addAttribute("awayRecStats", awayReceivingStats);
+
         model.addAttribute("matchupId", matchupId);
         model.addAttribute("teamId", teamIdString);
         model.addAttribute("username", user.getUsername());
@@ -166,33 +115,6 @@ public class FootballTrashTalkerController {
     public String showChat() {
         return "index";
     }
-
-    // left this here incase a need a guide while refactoring
-//    @RequestMapping(path = "/index", method = RequestMethod.POST)
-//    public String getJSON(Model model, String gameId) {
-//
-//        // code for parsing game data
-//        String uri = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id=2016100207";
-//        RestTemplate restTemplate = new RestTemplate();
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//        HttpEntity<String> request = new HttpEntity<String>("", headers);
-//
-//        String gameString = restTemplate.postForObject(uri, request, String.class);
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//
-//        Game currentGame = null;
-//        try {
-//            currentGame = mapper.readValue(gameString, Game.class);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return "index";
-//    }
 
     @MessageMapping("/teamId/{teamId}")
     @SendTo("/topic/teamId/{teamId}")
@@ -211,6 +133,7 @@ public class FootballTrashTalkerController {
         m.setText(message.getText());
         return m;
     }
+
 
     @PostConstruct
     public void init() throws IOException, ParseException {

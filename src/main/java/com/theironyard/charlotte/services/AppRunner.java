@@ -22,12 +22,15 @@ public class AppRunner implements CommandLineRunner {
     public void run(String... args) throws Exception {
         long start = System.currentTimeMillis();
 
-        Future<Game> someGame = gameUpdateService.findGame();
+        while (true) {
+            Future<Game> someGame = gameUpdateService.findGame();
 
-        while (!(someGame.isDone())) {
-            Thread.sleep(10);
+            while (!(someGame.isDone())) {
+                Thread.sleep(10);
+            }
+
+            Thread.sleep(1000);
         }
-
     }
 }
 

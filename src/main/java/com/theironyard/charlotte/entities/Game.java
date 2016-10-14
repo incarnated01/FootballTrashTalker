@@ -3,7 +3,9 @@ package com.theironyard.charlotte.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.theironyard.charlotte.services.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,8 +14,10 @@ import java.util.List;
 /**
  * Created by mfahrner on 10/9/16.
  */
+@Component
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Game {
+
     String nfl_id;
 
     Home home;
@@ -122,7 +126,7 @@ public class Game {
         for (int i = 0; i < currentDayGames.size();i ++) {
             long unixTime = System.currentTimeMillis() / 1000L;
             long gameTime = currentDayGames.get(i).getTime();
-            if (gameTime <= unixTime && gameTime < (unixTime + 21600)) {
+            if (gameTime <= unixTime && gameTime < (unixTime + 21600L)) {
                 pingList.add(currentDayGames.get(i));
             }
         }
