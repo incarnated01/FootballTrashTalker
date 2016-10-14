@@ -1,5 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+<ul>
+    <li ng-repeat="message in messages">
+        {{ message }}
+    </li>
+</ul>
+
+<!--<!DOCTYPE html>
+<html ng-app="sportsApp">
 
 <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
@@ -18,28 +24,9 @@
     <title>SMACKTALK</title>
 </head>
 
-<body style="overflow: scroll;">
+<body ng-controller="roomController" style="overflow: scroll;">
     <h1> TrashTalkin </h1>
-    <ul>
-        <p>Pass Stats</p>
-        {{#homePassStats}}
-        <li id="hPassStats">
-            {{name}} | {{completions}} | {{attempts}} | {{yards}} | {{touchdowns}} | {{interceptions}}
-        </li>
-        {{/homePassStats}}
-        <p>Rush Stats</p>
-        {{#homeRushStats}}
-        <li id="hRushStats">
-            {{name}} | {{attempts}} | {{yards}} | {{touchdowns}}
-        </li>
-        {{/homeRushStats}}
-        <p>Rec Stats</p>
-        {{#homeRecStats}}
-        <li>
-            {{name}} | {{receptions}} | {{yards}} | {{touchdowns}}
-        </li>
-        {{/homeRecStats}}
-    </ul>
+   
     <div id="main-content" class="container">
 
         <div class="row">
@@ -50,33 +37,11 @@
                 </form>
             </div>
             <nav id="navigation">
-                <a href="/index" id="teamroom">Team Room</a>
-                <a href="/index" id="matchuproom">Matchup Room</a>
-                <p>{{homeTeam}} : {{homeScore}}</p>
-                <br>
-                <p>{{awayTeam}} : {{awayScore}}</p>
-                <br>
+                <a href="/" id="teamroom">Team Room</a>
+                <a href="/" id="matchuproom">Matchup Room</a>
+                
             </nav>
-            <ul>
-                <p>Pass Stats</p>
-                {{#awayPassStats}}
-                <li id="aPassStats">
-                    {{name}} | {{completions}} | {{attempts}} | {{yards}} | {{touchdowns}} | {{interceptions}}
-                </li>
-                {{/awayPassStats}}
-                <p>Rush Stats</p>
-                {{#awayRushStats}}
-                <li id="aRushStats">
-                    {{name}} | {{attempts}} | {{yards}} | {{touchdowns}}
-                </li>
-                {{/awayRushStats}}
-                <p>Rec Stats</p>
-                {{#awayRecStats}}
-                <li>
-                    {{name}} | {{receptions}} | {{yards}} | {{touchdowns}}
-                </li>
-                {{/awayRecStats}}
-            </ul>
+           
 
             <div id="messagesBox" style="overflow: scroll;"> 
                      </div>
@@ -94,4 +59,4 @@
     </div>
 </body>
 
-</html>
+</html>-->

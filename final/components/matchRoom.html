@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html ng-app="sportsApp">
 
 <head>
@@ -10,8 +10,7 @@
     <link rel="stylesheet" href="style.css">
     <script type="application/javascript">
         const username = "{{ username }}";
-        const matchupId = "{{ matchupId" }};
-        const teamId = "{{ teamId }}";        
+        console.log(username);
     </script>
     <script src="app.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Titillium+Web" rel="stylesheet">
@@ -19,7 +18,7 @@
     <title>SMACKTALK</title>
 </head>
 
-<body style="overflow: scroll;">
+<body ng-controller="roomController" style="overflow: scroll;">
     <h1> TrashTalkin </h1>
    
     <div id="main-content" class="container">
@@ -32,13 +31,14 @@
                 </form>
             </div>
             <nav id="navigation">
-                <a ui-sref="teamRoom" id="teamroom">Team Room</a>
-                <a ui-sref="matchRoom" id="matchuproom">Matchup Room</a>
+                <a href="/" id="teamroom">Team Room</a>
+                <a href="/" id="matchuproom">Matchup Room</a>
                 
             </nav>
+           
 
-            <div ui-view id="messagesBox" style="overflow: scroll;"></div>
-
+            <div id="messagesBox" style="overflow: scroll;"> 
+                     </div>
             <div class="col-md-6">
                 <form class="form-inline">
                     
@@ -53,4 +53,11 @@
     </div>
 </body>
 
-</html>
+</html>-->
+
+
+<ul>
+    <li ng-repeat="message in messages">
+        {{ message }}
+    </li>
+</ul>
