@@ -1,9 +1,7 @@
 package com.theironyard.charlotte.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.theironyard.charlotte.entities.Game;
-import com.theironyard.charlotte.entities.Message;
-import com.theironyard.charlotte.entities.Schedule;
+import com.theironyard.charlotte.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -17,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +30,9 @@ public class GameUpdateService {
 
     @Autowired
     Game game;
+
+    @Autowired
+    TeamRepository teams;
 
     @Autowired
     private SimpMessagingTemplate template;
@@ -64,7 +66,47 @@ public class GameUpdateService {
 
             try {
                 thisGame = mapper.readValue(gameString, Game.class);
-                // send message to people. based off game.
+
+                // home team Id
+                String homeAbrv = thisGame.getHome().getTeam();
+                TeamIdentifier homeTeamAbrv = teams.findByAbbreviation(homeAbrv);
+                int homeTeamId = homeTeamAbrv.getId();
+                String homeStringTeamId = String.valueOf(homeTeamId);
+
+                // away team Id
+                String awayAbrv = thisGame.getAway().getTeam();
+                TeamIdentifier awayTeamAbrv = teams.findByAbbreviation(awayAbrv);
+                int awayTeamId = awayTeamAbrv.getId();
+                String awayStringTeamId = String.valueOf(awayTeamId);
+
+                // matchupId
+                String matchupId = thisGame.getNfl_id();
+
+                // getting score for gameUpdate
+                int homeScore = thisGame.getHome_score();
+                int awayScore = thisGame.getAway_score();
+
+                // getting home stats for gameUpdate
+                Collection<PassStat> homePassStats = thisGame.getHome().getStats().getPassing().values();
+                Collection<RushStat> homeRushStats = thisGame.getHome().getStats().getRushing().values();
+                Collection<RecStat> homeRecStats = thisGame.getHome().getStats().getReceiving().values();
+
+                // getting away stats for gameUpdate
+                Collection<PassStat> awayPassStats = thisGame.getAway().getStats().getPassing().values();
+                Collection<RushStat> awayRushStats = thisGame.getAway().getStats().getRushing().values();
+                Collection<RecStat> awayRecStats = thisGame.getAway().getStats().getReceiving().values();
+
+                Play currentPlay = null;
+
+                matchupUpdateMessage(homeScore, awayScore, homePassStats, homeRushStats, homeRecStats, awayPassStats,
+                        awayRushStats, awayRecStats, matchupId);
+
+                teamUpdateMessage(homeScore, awayScore, homePassStats, homeRushStats, homeRecStats, awayPassStats,
+                        awayRushStats, awayRecStats, homeStringTeamId);
+
+                teamUpdateMessage(homeScore, awayScore, homePassStats, homeRushStats, homeRecStats, awayPassStats,
+                        awayRushStats, awayRecStats, awayStringTeamId);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -78,4 +120,34 @@ public class GameUpdateService {
 //        Message m = new Message("autobot", "test");
 //        this.template.convertAndSend("/topic/teamId/32", m);
 //    }
+
+    public void matchupUpdateMessage(int homeScore, int awayScore,
+                                     Collection<PassStat> homePassStats, Collection<RushStat> homeRushStats,
+                                     Collection<RecStat> homeRecStats, Collection<PassStat> awayPassStats,
+                                     Collection<RushStat> awayRushStats, Collection<RecStat> awayRecStats,
+                                     String matchupId) {
+        UpdateMessage m = new UpdateMessage("UpdateBot", "update", homeScore, awayScore, homePassStats, homeRushStats,
+                homeRecStats, awayPassStats, awayRushStats, awayRecStats);
+                this.template.convertAndSend("/topic/matchupId/" + matchupId, m);
+
+
+    }
+
+    public void teamUpdateMessage(int homeScore, int awayScore,
+                                  Collection<PassStat> homePassStats, Collection<RushStat> homeRushStats,
+                                  Collection<RecStat> homeRecStats, Collection<PassStat> awayPassStats,
+                                  Collection<RushStat> awayRushStats, Collection<RecStat> awayRecStats,
+                                  String teamId) {
+        UpdateMessage m = new UpdateMessage("UpdateBot", "update", homeScore, awayScore, homePassStats, homeRushStats,
+                homeRecStats, awayPassStats, awayRushStats, awayRecStats);
+        this.template.convertAndSend("/topic/teamId/" + teamId, m);
+    }
+
+    public void matchupPlayMessage() {
+
+    }
+
+    public void teamPlayMessage() {
+
+    }
 }

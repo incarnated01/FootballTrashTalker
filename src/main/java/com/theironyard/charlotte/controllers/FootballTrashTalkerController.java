@@ -51,8 +51,6 @@ public class FootballTrashTalkerController {
     @Autowired
     ScheduleRepository schedule;
 
-    private SimpMessagingTemplate template;
-
     @Autowired
     ApplicationContext context;
 
@@ -82,7 +80,7 @@ public class FootballTrashTalkerController {
         if (matchupId == null) {
             teamSchedule = schedule.findByHomeOrAway(teamAbreviation, teamAbreviation);
             for (int i = 0;i < teamSchedule.size();i++) {
-                if (teamSchedule.get(i).getDayOfYear() > dayOfYear) {
+                if (teamSchedule.get(i).getDayOfYear() >= dayOfYear) {
                     matchupId = teamSchedule.get(i).getId();
                     gameDay = teamSchedule.get(i).getDayOfYear();
                     break;
