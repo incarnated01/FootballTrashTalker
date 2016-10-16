@@ -26,10 +26,10 @@ public class AppRunner implements CommandLineRunner {
             Future<Game> someGame = gameUpdateService.findGame();
 
             while (!(someGame.isDone())) {
-                Thread.sleep(10);
+                Thread.sleep(60000);
             }
 
-            Thread.sleep(1000);
+            Thread.sleep(60000);
         }
     }
 }

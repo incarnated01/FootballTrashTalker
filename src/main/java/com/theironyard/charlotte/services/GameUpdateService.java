@@ -110,6 +110,8 @@ public class GameUpdateService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            System.out.println("this id works" + thisGame.getNfl_id());
+
         }
 
         return new AsyncResult<>(thisGame);
