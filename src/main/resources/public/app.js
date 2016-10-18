@@ -1,4 +1,3 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 let app = angular.module('sportsApp', ['ui.router']);
 
 /**
@@ -28,7 +27,7 @@ app.component('matchwindow', {
     controller: 'matchController',
 });
 
-app.controller('TeamController', function ($scope, messageService) {
+app.controller('TeamController', function ($scope, $interval, messageService) {
     messageService.setCurrent('team');
     $scope.messages = messageService.getMessages();
 });
@@ -42,17 +41,19 @@ app.controller('sendController', function ($scope, messageService) {
     $scope.send = function(){
     messageService.sendMessage($scope.messageValue);
 
+    $scope.messageValue = '';
     };
 })
 
 // Factories return SERVICES.
-app.factory("messageService", function () {
+app.factory("messageService", function ($rootScope) {
     let messages = {
         team: [],
         match: [],
     };
 
     let currentRoom = 'team';
+    let onUpdate = null;
 
     // websocket code here
     let socket = new SockJS('/ws');
@@ -61,11 +62,15 @@ app.factory("messageService", function () {
         console.log('Connected: ' + frame);
 
         stompClient.subscribe('/topic/teamId/' + teamId, function (message) {
-            messages.team.push(JSON.parse(message.body));
+            $rootScope.$apply(function () {
+                messages.team.push(JSON.parse(message.body));
+            });
         });
 
         stompClient.subscribe('/topic/matchupId/' + matchupId, function (message) {
-            messages.match.push(JSON.parse(message.body));
+            $rootScope.$apply(function () {
+                messages.match.push(JSON.parse(message.body));
+            });
         });
     });
 
@@ -73,6 +78,10 @@ app.factory("messageService", function () {
         // 
         getMessages: function () {
             return messages[currentRoom];
+        },
+
+        onNewMessage: function (fn) {
+            onUpdate = fn;
         },
 
         sendMessage: function(valuable) {
@@ -165,4 +174,3 @@ app.factory("messageService", function () {
 // }
     // connect();
 // });
-},{}]},{},[1])

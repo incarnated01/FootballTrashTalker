@@ -112,7 +112,7 @@ public class GameUpdateService {
         return new AsyncResult<>(thisGame);
     }
 //
-//    @Scheduled(fixedRate = 1000)
+//    @Scheduled(fixedRate = 10000)
 //    public void testMessage() {
 //        UpdateMessage w = new UpdateMessage(7, 10);
 //        Message m = new Message(w);
