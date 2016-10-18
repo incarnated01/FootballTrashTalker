@@ -73,21 +73,24 @@ public class FootballTrashTalkerController {
         // finds fav team abbreviation
         String teamAbreviation = teamIdentifier.getAbbreviation();
 
-//         finds matchupId
+        // finds matchupId
         String matchupId = null;
-        int gameDay = 0;
         List<Schedule> teamSchedule = new ArrayList<>();
         if (matchupId == null) {
             teamSchedule = schedule.findByHomeOrAway(teamAbreviation, teamAbreviation);
             for (int i = 0;i < teamSchedule.size();i++) {
                 if (teamSchedule.get(i).getDayOfYear() >= dayOfYear) {
                     matchupId = teamSchedule.get(i).getId();
-                    gameDay = teamSchedule.get(i).getDayOfYear();
                     break;
                 }
             }
         }
 
+        Schedule currentSchedule = schedule.findById(matchupId);
+
+        String homeAbv = currentSchedule.getHome();
+
+        String awayAbv = currentSchedule.getAway();
         // finds current user, creates user if none exists
         User user = users.findFirstByUserName(userName);
         if (user == null) {
@@ -98,6 +101,8 @@ public class FootballTrashTalkerController {
             throw new Exception("Wrong password");
         }
 
+        model.addAttribute("awayAbrv", awayAbv);
+        model.addAttribute("homeAbrv", homeAbv);
         model.addAttribute("matchupId", matchupId);
         model.addAttribute("teamId", teamIdString);
         model.addAttribute("username", user.getUsername());
