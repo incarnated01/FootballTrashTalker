@@ -27,7 +27,7 @@ app.component('matchwindow', {
     controller: 'matchController',
 });
 
-app.controller('TeamController', function ($scope, messageService) {
+app.controller('TeamController', function ($scope, $interval, messageService) {
     messageService.setCurrent('team');
     $scope.messages = messageService.getMessages();
 });
@@ -41,17 +41,24 @@ app.controller('sendController', function ($scope, messageService) {
     $scope.send = function(){
     messageService.sendMessage($scope.messageValue);
 
+    $scope.messageValue = '';
     };
 })
 
 // Factories return SERVICES.
-app.factory("messageService", function () {
+app.factory("messageService", function ($rootScope) {
     let messages = {
         team: [],
         match: [],
     };
+    let scores = {
+        home: 0,
+        away: 0,
+    };
+
 
     let currentRoom = 'team';
+    let onUpdate = null;
 
     // websocket code here
     let socket = new SockJS('/ws');
@@ -60,11 +67,23 @@ app.factory("messageService", function () {
         console.log('Connected: ' + frame);
 
         stompClient.subscribe('/topic/teamId/' + teamId, function (message) {
-            messages.team.push(JSON.parse(message.body));
+            $rootScope.$apply(function () {
+            let allMessage = JSON.parse(message.body);
+            if (allMessage.messageType === 'chat') {
+                messages.team.push(allMessage.body);
+            } else if (allMessage.messageType === 'score') {
+                scores.home.push(allMessage.body.homeScore);
+            }
+
+
+
+            });
         });
 
         stompClient.subscribe('/topic/matchupId/' + matchupId, function (message) {
-            messages.match.push(JSON.parse(message.body));
+            $rootScope.$apply(function () {
+                messages.match.push(JSON.parse(message.body));
+            });
         });
     });
 
@@ -72,6 +91,10 @@ app.factory("messageService", function () {
         // 
         getMessages: function () {
             return messages[currentRoom];
+        },
+
+        onNewMessage: function (fn) {
+            onUpdate = fn;
         },
 
         sendMessage: function(valuable) {
