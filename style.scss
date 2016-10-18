@@ -1,13 +1,15 @@
-@import '../node_modules/foundation-sites/scss/foundation';
+// @import 'node_modules/foundation-sites/scss/foundation';
 
-// foundation now exists
-@include foundation-global-styles;
-@include foundation-grid;
+// // foundation now exists
+// @include foundation-global-styles;
+// @include foundation-grid;
 
 
 
 body {
-    background-image: url(http://wallpoper.com/images/00/44/89/64/black-background-hole-dirty_00448964.jpg);
+    background-image: url(http://wallpapercave.com/wp/JPFslu3.jpg);
+    background-size: 100%;
+    background-repeat: no-repeat;
     font-family: 'Titillium Web', sans-serif;
     color: deepskyblue;
 }
@@ -80,6 +82,8 @@ a {
     background-color: black;
     color: deepskyblue;
     width: 65%;
+    height: 25px;
+    font-size: 18px;
     padding-right: 0;
     position: relative;
     margin-top: 30px;
