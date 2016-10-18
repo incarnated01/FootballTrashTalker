@@ -101,6 +101,7 @@ public class FootballTrashTalkerController {
             throw new Exception("Wrong password");
         }
 
+        model.addAttribute("teamAbrv", teamAbreviation);
         model.addAttribute("awayAbrv", awayAbv);
         model.addAttribute("homeAbrv", homeAbv);
         model.addAttribute("matchupId", matchupId);
