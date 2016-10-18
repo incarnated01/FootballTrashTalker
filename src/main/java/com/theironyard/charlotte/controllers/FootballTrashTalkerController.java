@@ -116,20 +116,14 @@ public class FootballTrashTalkerController {
 
     @MessageMapping("/teamId/{teamId}")
     @SendTo("/topic/teamId/{teamId}")
-    public Message greeting(Message message, @DestinationVariable String teamId) throws Exception {
-        Message m = new Message();
-        m.setMessageName(message.getMessageName());
-        m.setText(message.getText());
-        return m;
+    public Message sendTeamMessage(ChatMessage message, @DestinationVariable String teamId) throws Exception {
+        return new Message(message);
     }
 
     @MessageMapping("/matchupId/{matchupId}")
     @SendTo("/topic/matchupId/{matchupId}")
-    public Message testaroo(Message message, @DestinationVariable String matchupId) throws Exception {
-        Message m = new Message();
-        m.setMessageName(message.getMessageName());
-        m.setText(message.getText());
-        return m;
+    public Message sendMatchupMessage(ChatMessage message, @DestinationVariable String matchupId) throws Exception {
+        return new Message(message);
     }
 
 

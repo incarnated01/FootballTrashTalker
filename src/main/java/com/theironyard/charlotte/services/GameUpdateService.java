@@ -98,58 +98,36 @@ public class GameUpdateService {
 
                 Play currentPlay = null;
 
-                matchupUpdateMessage(homeScore, awayScore, homePassStats, homeRushStats, homeRecStats, awayPassStats,
-                        awayRushStats, awayRecStats, matchupId);
+                matchupScoreMessage(homeScore, awayScore, matchupId);
 
-                teamUpdateMessage(homeScore, awayScore, homePassStats, homeRushStats, homeRecStats, awayPassStats,
-                        awayRushStats, awayRecStats, homeStringTeamId);
+                teamScoreMessage(homeScore, awayScore, homeStringTeamId);
 
-                teamUpdateMessage(homeScore, awayScore, homePassStats, homeRushStats, homeRecStats, awayPassStats,
-                        awayRushStats, awayRecStats, awayStringTeamId);
+                teamScoreMessage(homeScore, awayScore,awayStringTeamId);
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("this id works" + thisGame.getNfl_id());
-
         }
 
         return new AsyncResult<>(thisGame);
     }
 //
-//    @Scheduled(fixedRate = 100000)
-//    public void botMessage() {
-//        Message m = new Message("autobot", "test");
+//    @Scheduled(fixedRate = 1000)
+//    public void testMessage() {
+//        UpdateMessage w = new UpdateMessage(7, 10);
+//        Message m = new Message(w);
 //        this.template.convertAndSend("/topic/teamId/32", m);
 //    }
 
-    public void matchupUpdateMessage(int homeScore, int awayScore,
-                                     Collection<PassStat> homePassStats, Collection<RushStat> homeRushStats,
-                                     Collection<RecStat> homeRecStats, Collection<PassStat> awayPassStats,
-                                     Collection<RushStat> awayRushStats, Collection<RecStat> awayRecStats,
-                                     String matchupId) {
-        UpdateMessage m = new UpdateMessage("UpdateBot", "update", homeScore, awayScore, homePassStats, homeRushStats,
-                homeRecStats, awayPassStats, awayRushStats, awayRecStats);
-                this.template.convertAndSend("/topic/matchupId/" + matchupId, m);
-
-
+    public void matchupScoreMessage(int homeScore, int awayScore, String matchupId) {
+        UpdateMessage w = new UpdateMessage(homeScore, awayScore);
+        Message m = new Message(w);
+        this.template.convertAndSend("/topic/matchupId/" + matchupId, m);
     }
 
-    public void teamUpdateMessage(int homeScore, int awayScore,
-                                  Collection<PassStat> homePassStats, Collection<RushStat> homeRushStats,
-                                  Collection<RecStat> homeRecStats, Collection<PassStat> awayPassStats,
-                                  Collection<RushStat> awayRushStats, Collection<RecStat> awayRecStats,
-                                  String teamId) {
-        UpdateMessage m = new UpdateMessage("UpdateBot", "update", homeScore, awayScore, homePassStats, homeRushStats,
-                homeRecStats, awayPassStats, awayRushStats, awayRecStats);
+    public void teamScoreMessage(int homeScore, int awayScore, String teamId) {
+        UpdateMessage w = new UpdateMessage(homeScore, awayScore);
+        Message m = new Message(w);
         this.template.convertAndSend("/topic/teamId/" + teamId, m);
-    }
-
-    public void matchupPlayMessage() {
-
-    }
-
-    public void teamPlayMessage() {
-
     }
 }

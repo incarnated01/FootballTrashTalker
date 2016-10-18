@@ -6,30 +6,32 @@ package com.theironyard.charlotte.entities;
 
 public class Message {
 
-    private String messageName;
-    private String text;
-
-    public Message() {
+    public enum MessageType {
+        chat,
+        score
     }
 
-    public Message(String messageName, String text) {
-        this.messageName = messageName;
-        this.text = text;
+    private Sendable body;
+
+    public Message(Sendable payload) {
+        this.body = payload;
     }
 
-    public String getMessageName() {
-        return messageName;
+    public Sendable getBody() {
+        return body;
     }
 
-    public void setMessageName(String messageName) {
-        this.messageName = messageName;
+    public void setBody(Sendable body) {
+        this.body = body;
     }
 
-    public String getText() {
-        return text;
+    public MessageType getMessageType() {
+        if (body instanceof UpdateMessage) {
+            return MessageType.score;
+        }
+        else {
+            return MessageType.chat;
+        }
     }
 
-    public void setText(String text) {
-        this.text = text;
-    }
 }
