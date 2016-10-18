@@ -111,13 +111,13 @@ public class GameUpdateService {
 
         return new AsyncResult<>(thisGame);
     }
-//
-//    @Scheduled(fixedRate = 10000)
-//    public void testMessage() {
-//        UpdateMessage w = new UpdateMessage(7, 10);
-//        Message m = new Message(w);
-//        this.template.convertAndSend("/topic/teamId/32", m);
-//    }
+
+    @Scheduled(fixedRate = 10000)
+    public void testMessage() {
+        UpdateMessage w = new UpdateMessage(7, 10);
+        Message m = new Message(w);
+        this.template.convertAndSend("/topic/teamId/32", m);
+    }
 
     public void matchupScoreMessage(int homeScore, int awayScore, String matchupId) {
         UpdateMessage w = new UpdateMessage(homeScore, awayScore);

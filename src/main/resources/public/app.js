@@ -51,6 +51,11 @@ app.factory("messageService", function ($rootScope) {
         team: [],
         match: [],
     };
+    let scores = {
+        home: 0,
+        away: 0,
+    };
+
 
     let currentRoom = 'team';
     let onUpdate = null;
@@ -63,7 +68,15 @@ app.factory("messageService", function ($rootScope) {
 
         stompClient.subscribe('/topic/teamId/' + teamId, function (message) {
             $rootScope.$apply(function () {
-                messages.team.push(JSON.parse(message.body));
+            let allMessage = JSON.parse(message.body);
+            if (allMessage.messageType === 'chat') {
+                messages.team.push(allMessage.body);
+            } else if (allMessage.messageType === 'score') {
+                scores.home.push(allMessage.body.homeScore);
+            }
+
+
+
             });
         });
 
