@@ -72,7 +72,7 @@ app.factory("messageService", function ($rootScope) {
             if (allMessage.messageType === 'chat') {
                 messages.team.push(allMessage.body);
             } else if (allMessage.messageType === 'score') {
-                scores.home.push(allMessage.body.homeScore);
+                scores.team.push(allMessage.body.homeScore);
             }
 
 
@@ -82,7 +82,13 @@ app.factory("messageService", function ($rootScope) {
 
         stompClient.subscribe('/topic/matchupId/' + matchupId, function (message) {
             $rootScope.$apply(function () {
-                messages.match.push(JSON.parse(message.body));
+                let matchMessage = JSON.parse(message.body);
+                if (matchMessage.messageType === 'chat') {
+                messages.match.push(matchMessage.body);
+                } else if (matchMessage.messageType === 'score') {
+                    scores.match.push(matchMessage.body.homeScore);
+                }
+          
             });
         });
     });
