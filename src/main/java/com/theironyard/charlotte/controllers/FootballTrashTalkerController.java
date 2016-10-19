@@ -62,6 +62,10 @@ public class FootballTrashTalkerController {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int dayOfYear = cal.get(Calendar.DAY_OF_YEAR);
+        // code for demo day
+//        int dayOfYear = 290;
+
+
 
         // finds fav team
         TeamIdentifier teamIdentifier = teams.findFirstByName(favTeam);
@@ -85,6 +89,7 @@ public class FootballTrashTalkerController {
                 }
             }
         }
+
         // finds home and away abreviations
         Schedule currentSchedule = schedule.findById(matchupId);
         String homeAbv = currentSchedule.getHome();
@@ -114,11 +119,6 @@ public class FootballTrashTalkerController {
     public String home() {
         return "login";
     }
-//
-//    @RequestMapping(path = "/index", method = RequestMethod.GET)
-//    public String showChat() {
-//        return "index";
-//    }
 
     // message mapping for chat messages to team endpoint
     @MessageMapping("/teamId/{teamId}")

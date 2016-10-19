@@ -61,7 +61,6 @@ public class GameUpdateService {
             vars.put("game_id", currentDaysGames.get(i).getId());
 
             // contacts api
-//        String gameURI = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id=2016100207";
             String gameURI = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id={game_id}";
 
             // saves response as a string
@@ -112,13 +111,6 @@ public class GameUpdateService {
 
         return new AsyncResult<>(updatedGame);
     }
-//
-//    @Scheduled(fixedRate = 10000)
-//    public void testMessage() {
-//        UpdateMessage w = new UpdateMessage(7, 10);
-//        Message m = new Message(w);
-//        this.template.convertAndSend("/topic/teamId/32", m);
-//    }
 
     public void matchupScoreMessage(int homeScore, int awayScore, String matchupId) {
         UpdateMessage scoreMessage = new UpdateMessage(homeScore, awayScore);
