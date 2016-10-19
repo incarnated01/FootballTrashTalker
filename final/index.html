@@ -4,6 +4,8 @@
 <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.0-beta.3/angular-ui-router.min.js"></script>
+    <!--<script src="node_modules/angularjs-scroll-glue/src/scrollglue.js"></script>-->
+    <!--<script src="https://cdn.rawgit.com/Luegg/angularjs-scroll-glue/master/src/scrollglue.js"></script>-->
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
@@ -34,7 +36,7 @@
             </div>
 <scoreboard></scoreboard>
 
-            <div ui-view style = "overflow-y: scroll;" id="messagesBox" style= "height: 300px;"></div>
+            <div ui-view scroll-glue id="messagesBox"></div>
 
             <div class="col-md-6">
                 <form ng-submit="send()" class="form-inline">
