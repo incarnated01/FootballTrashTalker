@@ -7,6 +7,6 @@ import org.springframework.data.repository.CrudRepository;
  * Created by mfahrner on 10/10/16.
  */
 public interface TeamRepository extends CrudRepository<TeamIdentifier, Integer> {
-    TeamIdentifier findFirstByName(String teamName);
+    TeamIdentifier findFirstByNameIgnoreCase(String teamName);
     TeamIdentifier findByAbbreviation(String abrv);
 }

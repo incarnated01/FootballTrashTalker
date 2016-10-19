@@ -68,7 +68,7 @@ public class FootballTrashTalkerController {
 
 
         // finds fav team
-        TeamIdentifier teamIdentifier = teams.findFirstByName(favTeam);
+        TeamIdentifier teamIdentifier = teams.findFirstByNameIgnoreCase(favTeam);
 
         // finds fav team id
         int teamId = teamIdentifier.getId();
