@@ -16,6 +16,7 @@ app.config(function ($stateProvider) {
         url: '/match',
         component: 'matchwindow',
     });
+
 });
 
 app.component('teamwindow', {
@@ -46,6 +47,7 @@ app.controller('matchController', function ($scope, messageService) {
 
 app.controller('scoreController', function($scope, messageService) {
     $scope.scorez = messageService.getScores();
+    $scope.abbrvs = messageService.getAbrv();
 })
 
 app.controller('sendController', function ($scope, messageService) {
@@ -66,6 +68,14 @@ app.factory("messageService", function ($rootScope) {
         home: 0,
         away: 0,
     };
+
+    let abbreviation = {
+        aAbrv: awayTeam,
+        hAbrv: homeTeam,
+        tAbrv: teamTeam,
+    };
+
+
 
 
     let currentRoom = 'team';
@@ -120,6 +130,9 @@ app.factory("messageService", function ($rootScope) {
         // need functions to get data from the services
         getScores: function () {
             return scores;
+        },
+        getAbrv: function () {
+            return abbreviation;
         },
 
         sendMessage: function(valuable) {

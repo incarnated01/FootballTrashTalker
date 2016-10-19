@@ -18,12 +18,13 @@
     </script>
     <script src="app.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Titillium+Web" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
     <meta charset="UTF-8">
-    <title>SMACKTALK</title>
+    <title>SMACKTALKER</title>
 </head>
 
 <body style="overflow: scroll;">
-    <h1> TrashTalkin </h1>
+    <h1> SmackTalker </h1>
    
     <div id="main-content" class="container">
 
@@ -36,7 +37,7 @@
             </div>
 <scoreboard></scoreboard>
 
-            <div ui-view id="messagesBox" style="overflow: scroll;"></div>
+            <div ui-view style = "overflow-y: scroll;" id="messagesBox" style= "height: 300px;"></div>
 
             <div class="col-md-6">
                 <form ng-submit="send()" class="form-inline">
