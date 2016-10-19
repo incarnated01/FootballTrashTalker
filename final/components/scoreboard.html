@@ -1,11 +1,7 @@
 <nav id="navigation" ng-controller="scoreController">
-    <a ui-sref="teamRoom" id="teamroom">{{ abbrvs.tAbrv}} Room</a>
-    <p id="scoreboardHome">{{ abbrvs.hAbrv }}: {{ scorez.home }}</p>
-    <p id="scoreboardAway">{{ abbrvs.aAbrv }}: {{ scorez.away }}</p>
-    <!--<p id="abrvAway">{{ abbrvs.aAbrv }}</p>-->
-    <!--<p id="abrvHome">{{ abbrvs.hAbrv }}</p>-->
-    <!--<p id="abrvTeam">{{ abbrvs.tAbrv }}</p>-->
-
-    <a ui-sref="matchRoom" id="matchuproom">{{ abbrvs.hAbrv }} vs. {{ abbrvs.aAbrv }} Room</a>
+    <a ui-sref="teamRoom" id="teamroom">Team Room</a>
+    <p id="scoreboardHome">{{ scorez.home }}</p>
+    <p id="scoreboardAway">{{ scorez.away }}</p>
+    <a ui-sref="matchRoom" id="matchuproom">Matchup Room</a>
 
 </nav>

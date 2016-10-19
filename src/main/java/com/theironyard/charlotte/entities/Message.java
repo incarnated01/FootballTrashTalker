@@ -37,5 +37,4 @@ public class Message {
             return MessageType.chat;
         }
     }
-
 }
