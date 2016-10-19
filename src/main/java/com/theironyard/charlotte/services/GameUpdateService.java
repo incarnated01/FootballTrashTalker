@@ -90,9 +90,9 @@ public class GameUpdateService {
                 int awayScore = updatedGame.getAway_score();
 
                 // sending score message to all three appropriate subscribed endpoints
-                matchupScoreMessage(homeScore, awayScore, matchupId);
-                teamScoreMessage(homeScore, awayScore, homeStringTeamId);
-                teamScoreMessage(homeScore, awayScore,awayStringTeamId);
+                sendMatchupScoreMessage(homeScore, awayScore, matchupId);
+                sendTeamScoreMessage(homeScore, awayScore, homeStringTeamId);
+                sendTeamScoreMessage(homeScore, awayScore,awayStringTeamId);
 
                 // getting home stats for statUpdate for future feature
                 Collection<PassStat> homePassStats = updatedGame.getHome().getStats().getPassing().values();
@@ -104,6 +104,17 @@ public class GameUpdateService {
                 Collection<RushStat> awayRushStats = updatedGame.getAway().getStats().getRushing().values();
                 Collection<RecStat> awayRecStats = updatedGame.getAway().getStats().getReceiving().values();
 
+                // future feature statmessage
+//                sendMatchupStatMessage(homePassStats, homeRushStats, homeRecStats, awayPassStats, awayRushStats,
+//                                       awayRecStats, matchupId);
+//
+//                sendTeamStatMessage(homePassStats, homeRushStats, homeRecStats, awayPassStats, awayRushStats,
+//                        awayRecStats, homeStringTeamId);
+//
+//                sendTeamStatMessage(homePassStats, homeRushStats, homeRecStats, awayPassStats, awayRushStats,
+//                        awayRecStats, awayStringTeamId);
+//
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -112,16 +123,36 @@ public class GameUpdateService {
         return new AsyncResult<>(updatedGame);
     }
 
-    public void matchupScoreMessage(int homeScore, int awayScore, String matchupId) {
+    public void sendMatchupScoreMessage(int homeScore, int awayScore, String matchupId) {
         UpdateMessage scoreMessage = new UpdateMessage(homeScore, awayScore);
         Message message = new Message(scoreMessage);
         this.template.convertAndSend("/topic/matchupId/" + matchupId, message);
     }
 
 
-    public void teamScoreMessage(int homeScore, int awayScore, String teamId) {
+    public void sendTeamScoreMessage(int homeScore, int awayScore, String teamId) {
         UpdateMessage scoreMessage = new UpdateMessage(homeScore, awayScore);
         Message message = new Message(scoreMessage);
+        this.template.convertAndSend("/topic/teamId/" + teamId, message);
+    }
+
+    public void sendMatchupStatMessage(Collection<PassStat> homePassStats, Collection<RushStat> homeRushStats,
+                                   Collection<RecStat> homeRecStats, Collection<PassStat> awayPassStats,
+                                   Collection<RushStat> awayRushStats, Collection<RecStat> awayRecStats,
+                                   String matchupId) {
+        StatMessage statMessage = new StatMessage(homePassStats, homeRushStats, homeRecStats, awayPassStats,
+                awayRushStats, awayRecStats);
+        Message message = new Message(statMessage);
+        this.template.convertAndSend("/topic/matchupId/" + matchupId, message);
+    }
+
+    public void sendTeamStatMessage(Collection<PassStat> homePassStats, Collection<RushStat> homeRushStats,
+                                Collection<RecStat> homeRecStats, Collection<PassStat> awayPassStats,
+                                Collection<RushStat> awayRushStats, Collection<RecStat> awayRecStats,
+                                String teamId) {
+        StatMessage statMessage = new StatMessage(homePassStats, homeRushStats, homeRecStats, awayPassStats,
+                                                  awayRushStats, awayRecStats);
+        Message message = new Message(statMessage);
         this.template.convertAndSend("/topic/teamId/" + teamId, message);
     }
 }
