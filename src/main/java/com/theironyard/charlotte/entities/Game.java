@@ -125,6 +125,8 @@ public class Game {
         List<Schedule> pingList = new ArrayList<>();
         for (int i = 0; i < currentDayGames.size();i ++) {
             long unixTime = System.currentTimeMillis() / 1000L;
+            // unixtime for demo day
+//            long unixTime = 1476594000;
             long gameTime = currentDayGames.get(i).getTime();
             if (gameTime <= unixTime && gameTime < (unixTime + 21600L)) {
                 pingList.add(currentDayGames.get(i));

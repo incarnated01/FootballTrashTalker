@@ -8,7 +8,8 @@ public class Message {
 
     public enum MessageType {
         chat,
-        score
+        score,
+        stat
     }
 
     private Sendable body;
@@ -28,6 +29,9 @@ public class Message {
     public MessageType getMessageType() {
         if (body instanceof UpdateMessage) {
             return MessageType.score;
+        }
+        else if (body instanceof StatMessage){
+            return MessageType.stat;
         }
         else {
             return MessageType.chat;
