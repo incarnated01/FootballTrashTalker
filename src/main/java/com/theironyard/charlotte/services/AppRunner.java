@@ -22,6 +22,7 @@ public class AppRunner implements CommandLineRunner {
     public void run(String... args) throws Exception {
         long start = System.currentTimeMillis();
 
+        // runs gameUpdateService method to update game date in real time on additional thread
         while (true) {
             Future<Game> someGame = gameUpdateService.findGame();
 

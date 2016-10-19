@@ -116,7 +116,7 @@ public class Game {
         this.away_score = away_score;
     }
 
-    public List<Schedule> getCurrentGames() {
+    public List<Schedule> getGamesToUpdate() {
         java.util.Date date= new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);

@@ -21,6 +21,7 @@ public class FootballTrashTalkerApplication extends AsyncConfigurerSupport {
 		SpringApplication.run(FootballTrashTalkerApplication.class, args);
 	}
 
+	// customizes async variables
 	@Override
 	public Executor getAsyncExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();

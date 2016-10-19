@@ -10,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -50,84 +49,87 @@ public class GameUpdateService {
 
         ObjectMapper mapper = new ObjectMapper();
 
-        List<Schedule> currentDaysGames = game.getCurrentGames();
+        // generates a list of current days schedule
+        List<Schedule> currentDaysGames = game.getGamesToUpdate();
 
         Map<String,String> vars = new HashMap<>();
 
-        Game thisGame = null;
+        Game updatedGame = null;
 
+        // for loop to contact api for every game in the game update list
         for (int i = 0; i < currentDaysGames.size();i++) {
             vars.put("game_id", currentDaysGames.get(i).getId());
 
+            // contacts api
 //        String gameURI = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id=2016100207";
             String gameURI = "https://profootballapi.com/game/?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&game_id={game_id}";
 
-            String gameString = restTemplate.postForObject(gameURI, request, String.class, vars);
+            // saves response as a string
+            String gameResponseString = restTemplate.postForObject(gameURI, request, String.class, vars);
 
+            // uses object mapper to parse response string into various classes
             try {
-                thisGame = mapper.readValue(gameString, Game.class);
+                updatedGame = mapper.readValue(gameResponseString, Game.class);
 
-                // home team Id
-                String homeAbrv = thisGame.getHome().getTeam();
+                // find home team Id
+                String homeAbrv = updatedGame.getHome().getTeam();
                 TeamIdentifier homeTeamAbrv = teams.findByAbbreviation(homeAbrv);
                 int homeTeamId = homeTeamAbrv.getId();
                 String homeStringTeamId = String.valueOf(homeTeamId);
 
-                // away team Id
-                String awayAbrv = thisGame.getAway().getTeam();
+                // find away team Id
+                String awayAbrv = updatedGame.getAway().getTeam();
                 TeamIdentifier awayTeamAbrv = teams.findByAbbreviation(awayAbrv);
                 int awayTeamId = awayTeamAbrv.getId();
                 String awayStringTeamId = String.valueOf(awayTeamId);
 
-                // matchupId
-                String matchupId = thisGame.getNfl_id();
+                // find matchupId
+                String matchupId = updatedGame.getNfl_id();
 
                 // getting score for gameUpdate
-                int homeScore = thisGame.getHome_score();
-                int awayScore = thisGame.getAway_score();
+                int homeScore = updatedGame.getHome_score();
+                int awayScore = updatedGame.getAway_score();
 
-                // getting home stats for gameUpdate
-                Collection<PassStat> homePassStats = thisGame.getHome().getStats().getPassing().values();
-                Collection<RushStat> homeRushStats = thisGame.getHome().getStats().getRushing().values();
-                Collection<RecStat> homeRecStats = thisGame.getHome().getStats().getReceiving().values();
-
-                // getting away stats for gameUpdate
-                Collection<PassStat> awayPassStats = thisGame.getAway().getStats().getPassing().values();
-                Collection<RushStat> awayRushStats = thisGame.getAway().getStats().getRushing().values();
-                Collection<RecStat> awayRecStats = thisGame.getAway().getStats().getReceiving().values();
-
-                Play currentPlay = null;
-
+                // sending score message to all three appropriate subscribed endpoints
                 matchupScoreMessage(homeScore, awayScore, matchupId);
-
                 teamScoreMessage(homeScore, awayScore, homeStringTeamId);
-
                 teamScoreMessage(homeScore, awayScore,awayStringTeamId);
+
+                // getting home stats for statUpdate for future feature
+                Collection<PassStat> homePassStats = updatedGame.getHome().getStats().getPassing().values();
+                Collection<RushStat> homeRushStats = updatedGame.getHome().getStats().getRushing().values();
+                Collection<RecStat> homeRecStats = updatedGame.getHome().getStats().getReceiving().values();
+
+                // getting away stats for statUpdate for future feature
+                Collection<PassStat> awayPassStats = updatedGame.getAway().getStats().getPassing().values();
+                Collection<RushStat> awayRushStats = updatedGame.getAway().getStats().getRushing().values();
+                Collection<RecStat> awayRecStats = updatedGame.getAway().getStats().getReceiving().values();
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        return new AsyncResult<>(thisGame);
+        return new AsyncResult<>(updatedGame);
     }
-
-    @Scheduled(fixedRate = 10000)
-    public void testMessage() {
-        UpdateMessage w = new UpdateMessage(7, 10);
-        Message m = new Message(w);
-        this.template.convertAndSend("/topic/teamId/32", m);
-    }
+//
+//    @Scheduled(fixedRate = 10000)
+//    public void testMessage() {
+//        UpdateMessage w = new UpdateMessage(7, 10);
+//        Message m = new Message(w);
+//        this.template.convertAndSend("/topic/teamId/32", m);
+//    }
 
     public void matchupScoreMessage(int homeScore, int awayScore, String matchupId) {
-        UpdateMessage w = new UpdateMessage(homeScore, awayScore);
-        Message m = new Message(w);
-        this.template.convertAndSend("/topic/matchupId/" + matchupId, m);
+        UpdateMessage scoreMessage = new UpdateMessage(homeScore, awayScore);
+        Message message = new Message(scoreMessage);
+        this.template.convertAndSend("/topic/matchupId/" + matchupId, message);
     }
 
+
     public void teamScoreMessage(int homeScore, int awayScore, String teamId) {
-        UpdateMessage w = new UpdateMessage(homeScore, awayScore);
-        Message m = new Message(w);
-        this.template.convertAndSend("/topic/teamId/" + teamId, m);
+        UpdateMessage scoreMessage = new UpdateMessage(homeScore, awayScore);
+        Message message = new Message(scoreMessage);
+        this.template.convertAndSend("/topic/teamId/" + teamId, message);
     }
 }

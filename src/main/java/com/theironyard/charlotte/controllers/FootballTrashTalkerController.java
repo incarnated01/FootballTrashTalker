@@ -57,7 +57,7 @@ public class FootballTrashTalkerController {
     @RequestMapping(path = "/", method = RequestMethod.POST)
     public String login(Model model, String userName, String password, String favTeam) throws Exception {
 
-        // code to establish day of year values
+        // establish day of year values
         java.util.Date date= new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -79,18 +79,17 @@ public class FootballTrashTalkerController {
         if (matchupId == null) {
             teamSchedule = schedule.findByHomeOrAway(teamAbreviation, teamAbreviation);
             for (int i = 0;i < teamSchedule.size();i++) {
-                if (teamSchedule.get(i).getDayOfYear() >= dayOfYear) {
+                if (teamSchedule.get(i).getDayOfYear() >= dayOfYear -1) {
                     matchupId = teamSchedule.get(i).getId();
                     break;
                 }
             }
         }
-
+        // finds home and away abreviations
         Schedule currentSchedule = schedule.findById(matchupId);
-
         String homeAbv = currentSchedule.getHome();
-
         String awayAbv = currentSchedule.getAway();
+
         // finds current user, creates user if none exists
         User user = users.findFirstByUserName(userName);
         if (user == null) {
@@ -101,6 +100,7 @@ public class FootballTrashTalkerController {
             throw new Exception("Wrong password");
         }
 
+        // variables added to model to pass to client via header in html
         model.addAttribute("teamAbrv", teamAbreviation);
         model.addAttribute("awayAbrv", awayAbv);
         model.addAttribute("homeAbrv", homeAbv);
@@ -114,27 +114,31 @@ public class FootballTrashTalkerController {
     public String home() {
         return "login";
     }
+//
+//    @RequestMapping(path = "/index", method = RequestMethod.GET)
+//    public String showChat() {
+//        return "index";
+//    }
 
-    @RequestMapping(path = "/index", method = RequestMethod.GET)
-    public String showChat() {
-        return "index";
-    }
-
+    // message mapping for chat messages to team endpoint
     @MessageMapping("/teamId/{teamId}")
     @SendTo("/topic/teamId/{teamId}")
     public Message sendTeamMessage(ChatMessage message, @DestinationVariable String teamId) throws Exception {
         return new Message(message);
     }
 
+    // message mapping for chat messages to matchup endpoint
     @MessageMapping("/matchupId/{matchupId}")
     @SendTo("/topic/matchupId/{matchupId}")
     public Message sendMatchupMessage(ChatMessage message, @DestinationVariable String matchupId) throws Exception {
         return new Message(message);
     }
 
-
+    // method to establish identifying information for teams and save to database
+    // also contacts api to read schedule into database upon startup
     @PostConstruct
     public void init() throws IOException, ParseException {
+        // condition to only allow the information to be added to database once
         if (teams.count() == 0) {
             File f = new File("teams.csv");
             Scanner fileScanner = new Scanner(f);
@@ -150,6 +154,7 @@ public class FootballTrashTalkerController {
             }
         }
 
+        // condition to only allow the information to be added to database once
         if (schedule.count() == 0) {
             String scheduleURI = "https://profootballapi.com/schedule?api_key=RbY0qXPLrFzKjwZHf28oBaet7JOpAixG&&year=2016&season_type=REG";
 
@@ -158,19 +163,22 @@ public class FootballTrashTalkerController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            HttpEntity<String> request = new HttpEntity<String>("", headers);
+            HttpEntity<String> request = new HttpEntity<>("", headers);
 
-            String scheduleString = restTemplate.postForObject(scheduleURI, request, String.class);
+            String scheduleResponseString = restTemplate.postForObject(scheduleURI, request, String.class);
 
             ObjectMapper mapper = new ObjectMapper();
 
             List<Schedule> currentSchedule = null;
             try {
-                currentSchedule = mapper.readValue(scheduleString, new TypeReference<List<Schedule>>(){});
+                currentSchedule = mapper.readValue(scheduleResponseString, new TypeReference<List<Schedule>>(){});
+
             } catch (IOException e) {
             e.printStackTrace();
             }
 
+            // converts day and month to day of year
+            // and adds column in database
             for (int i = 0;i < currentSchedule.size();i++) {
                 Schedule scheduleObject = currentSchedule.get(i);
                 int scheduleDay = Integer.valueOf(scheduleObject.getDay());
