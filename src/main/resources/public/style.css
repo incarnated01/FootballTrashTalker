@@ -3,13 +3,12 @@ body {
   background-size: 100%;
   background-repeat: no-repeat;
   font-family: 'Titillium Web', sans-serif;
-  color: deepskyblue; }
+  color: deepskyblue;
+  overflow-y: scroll; }
 
 ul {
   list-style: none;
-  padding: 1%;
-  height: 300px;
-  overflow: scroll-y; }
+  padding: 1%; }
 
 h1 {
   text-align: center; }
@@ -18,7 +17,8 @@ h1 {
   display: inline;
   width: 70%;
   margin-left: 200px;
-  align-content: center; }
+  align-content: center;
+  overflow-y: scroll; }
 
 a {
   display: inline-block;
@@ -51,23 +51,25 @@ a {
   text-decoration: none; }
 
 .form-inline {
-  display: inline; }
+  display: inline;
+  overflow-y: scroll; }
 
 .form-group {
   display: inline;
   padding-right: 100px;
   padding-left: 0;
-  margin-left: 0; }
+  margin-left: 0;
+  overflow-y: scroll; }
 
 #scoreboardHome {
   display: inline-block;
   width: 155px;
   font-family: 'Orbitron', sans-serif;
-  font-size: 35px;
+  font-size: 25px;
   text-align: center;
   position: relative;
-  height: 75px;
-  padding-top: 40px;
+  height: 50px;
+  padding-top: 35px;
   border: 2px solid whitesmoke;
   background-color: black;
   color: lime; }
@@ -78,9 +80,9 @@ a {
   position: relative;
   font-family: 'Orbitron', sans-serif;
   text-align: center;
-  font-size: 35px;
-  height: 75px;
-  padding-top: 40px;
+  font-size: 25px;
+  height: 50px;
+  padding-top: 35px;
   border: 2px solid whitesmoke;
   background-color: black;
   color: lime; }
@@ -95,20 +97,20 @@ a {
   padding-right: 0;
   position: relative;
   margin-top: 30px;
-  margin-bottom: 50px; }
+  margin-bottom: 50px;
+  overflow-y: scroll; }
 
 #messagesBox {
   display: block;
   width: 80%;
-  height: 350px;
-  text-overflow: ellipsis;
+  height: 300px;
   overflow-y: scroll;
-  z-index: -1;
+  overflow: auto;
   position: relative;
   background-color: black;
   border: 2px solid deepskyblue;
-  flex-wrap: wrap;
-  margin-left: 110px; }
+  margin-left: 110px;
+  bottom: 0; }
 
 /* Dropdown button on hover & focus */
 .dropbtn:hover, .dropbtn:focus {
@@ -199,7 +201,7 @@ a {
 
 #login {
   display: block;
-  margin-top: 200px;
+  margin-top: 150px;
   margin-left: 450px; }
 
 #teamInfo {

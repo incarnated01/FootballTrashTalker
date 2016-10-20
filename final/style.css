@@ -6,8 +6,10 @@ body {
   color: deepskyblue; }
 
 ul {
-  display: inline;
-  list-style: none; }
+  list-style: none;
+  padding: 1%;
+  height: 300px;
+  overflow: scroll-y; }
 
 h1 {
   text-align: center; }
@@ -21,7 +23,7 @@ h1 {
 a {
   display: inline-block;
   text-decoration: none;
-  color: deepskyblue;
+  color: lime;
   font-size: 22px;
   padding-left: 100px;
   padding: 20px;
@@ -59,23 +61,29 @@ a {
 
 #scoreboardHome {
   display: inline-block;
-  width: 50px;
-  font-size: 25px;
+  width: 155px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 35px;
+  text-align: center;
   position: relative;
-  height: 50px;
+  height: 75px;
+  padding-top: 40px;
   border: 2px solid whitesmoke;
   background-color: black;
-  color: deeppink; }
+  color: lime; }
 
 #scoreboardAway {
   display: inline-block;
-  width: 50px;
+  width: 155px;
   position: relative;
-  font-size: 25px;
-  height: 50px;
+  font-family: 'Orbitron', sans-serif;
+  text-align: center;
+  font-size: 35px;
+  height: 75px;
+  padding-top: 40px;
   border: 2px solid whitesmoke;
   background-color: black;
-  color: deeppink; }
+  color: lime; }
 
 #message {
   display: inline;
@@ -93,21 +101,14 @@ a {
   display: block;
   width: 80%;
   height: 350px;
-  overflow: none;
+  text-overflow: ellipsis;
+  overflow-y: scroll;
   z-index: -1;
   position: relative;
   background-color: black;
   border: 2px solid deepskyblue;
   flex-wrap: wrap;
   margin-left: 110px; }
-
-dropbtn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-  cursor: pointer; }
 
 /* Dropdown button on hover & focus */
 .dropbtn:hover, .dropbtn:focus {
@@ -140,3 +141,68 @@ dropbtn {
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 .show {
   display: block; }
+
+#passwordBox {
+  display: inline;
+  background-color: black;
+  color: deepskyblue;
+  width: 33%;
+  height: 25px;
+  font-size: 18px;
+  padding-right: 0;
+  position: relative;
+  margin-top: 8px;
+  margin-bottom: 10px; }
+
+#usernameBox {
+  display: inline;
+  background-color: black;
+  color: deepskyblue;
+  width: 33%;
+  height: 25px;
+  font-size: 18px;
+  padding-right: 0;
+  position: relative;
+  margin-top: 8px;
+  margin-bottom: 10px; }
+
+#myDropdown {
+  display: inline;
+  background-color: black;
+  color: deepskyblue;
+  font-size: 18px;
+  padding-right: 0;
+  position: relative;
+  margin-top: 30px;
+  margin-left: 50px;
+  margin-bottom: 10px;
+  padding-left: 300px; }
+
+#loginBtn {
+  display: inline;
+  background-color: black;
+  color: deepskyblue;
+  width: 20%;
+  height: 35px;
+  font-size: 18px;
+  padding-right: 0;
+  position: relative;
+  margin-top: 30px;
+  margin-bottom: 50px;
+  margin-left: 40px; }
+
+.logIt:hover {
+  background: black;
+  color: deepskyblue;
+  border: 2px solid deepskyblue;
+  text-decoration: none; }
+
+#login {
+  display: block;
+  margin-top: 200px;
+  margin-left: 450px; }
+
+#teamInfo {
+  display: block;
+  padding-left: 55px;
+  padding-top: 10px; }

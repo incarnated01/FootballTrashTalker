@@ -1,4 +1,3 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 let app = angular.module('sportsApp', ['ui.router']);
 
 /**
@@ -16,6 +15,7 @@ app.config(function ($stateProvider) {
         url: '/match',
         component: 'matchwindow',
     });
+
 });
 
 app.component('teamwindow', {
@@ -37,10 +37,6 @@ app.controller('TeamController', function ($scope, $interval, messageService) {
     messageService.setCurrent('team');
     $scope.messages = messageService.getMessages();
 
-    $scope.$watchCollection('messages', function () {
-        let box = document.querySelector('#messagesBox');
-        box.scrollTop = box.scrollHeight;
-    });
 });
 
 app.controller('matchController', function ($scope, messageService) {
@@ -50,6 +46,7 @@ app.controller('matchController', function ($scope, messageService) {
 
 app.controller('scoreController', function($scope, messageService) {
     $scope.scorez = messageService.getScores();
+    $scope.abbrvs = messageService.getAbrv();
 })
 
 app.controller('sendController', function ($scope, messageService) {
@@ -58,9 +55,7 @@ app.controller('sendController', function ($scope, messageService) {
 
     $scope.messageValue = '';
     };
-});
-
-
+})
 
 // Factories return SERVICES.
 app.factory("messageService", function ($rootScope) {
@@ -72,6 +67,14 @@ app.factory("messageService", function ($rootScope) {
         home: 0,
         away: 0,
     };
+
+    let abbreviation = {
+        aAbrv: awayTeam,
+        hAbrv: homeTeam,
+        tAbrv: teamTeam,
+    };
+
+
 
 
     let currentRoom = 'team';
@@ -127,6 +130,9 @@ app.factory("messageService", function ($rootScope) {
         getScores: function () {
             return scores;
         },
+        getAbrv: function () {
+            return abbreviation;
+        },
 
         sendMessage: function(valuable) {
 
@@ -143,8 +149,6 @@ app.factory("messageService", function ($rootScope) {
         },
     };
 });
-
-
 
 // (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // var stompClient = null;
@@ -220,4 +224,3 @@ app.factory("messageService", function ($rootScope) {
 // }
     // connect();
 // });
-},{}]},{},[1])
